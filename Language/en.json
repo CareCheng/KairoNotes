@@ -1,0 +1,112 @@
+{
+  "app": {
+    "name": "RustNote Editor",
+    "description": "Modern Cross-Platform Document Editor"
+  },
+  "file": {
+    "new": "New File",
+    "open": "Open File",
+    "openFolder": "Open Folder",
+    "save": "Save",
+    "saveAs": "Save As",
+    "close": "Close",
+    "closeAll": "Close All",
+    "recentFiles": "Recent Files",
+    "clearRecent": "Clear Recent",
+    "exit": "Exit"
+  },
+  "edit": {
+    "undo": "Undo",
+    "redo": "Redo",
+    "cut": "Cut",
+    "copy": "Copy",
+    "paste": "Paste",
+    "selectAll": "Select All",
+    "find": "Find",
+    "replace": "Replace",
+    "findInFiles": "Find in Files"
+  },
+  "view": {
+    "commandPalette": "Command Palette",
+    "explorer": "Explorer",
+    "search": "Search",
+    "extensions": "Extensions",
+    "terminal": "Terminal",
+    "problems": "Problems",
+    "output": "Output",
+    "toggleSidebar": "Toggle Sidebar",
+    "toggleStatusBar": "Toggle Status Bar",
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out",
+    "resetZoom": "Reset Zoom"
+  },
+  "settings": {
+    "title": "Settings",
+    "editor": "Editor",
+    "appearance": "Appearance",
+    "language": "Language",
+    "theme": "Theme",
+    "fontSize": "Font Size",
+    "fontFamily": "Font Family",
+    "tabSize": "Tab Size",
+    "wordWrap": "Word Wrap",
+    "lineNumbers": "Line Numbers",
+    "minimap": "Minimap",
+    "autoSave": "Auto Save",
+    "encoding": "Encoding"
+  },
+  "search": {
+    "placeholder": "Search",
+    "replaceWith": "Replace with",
+    "matchCase": "Match Case",
+    "matchWholeWord": "Match Whole Word",
+    "useRegex": "Use Regular Expression",
+    "replaceAll": "Replace All",
+    "noResults": "No results found",
+    "resultsCount": "Found {count} results"
+  },
+  "statusBar": {
+    "line": "Line",
+    "column": "Column",
+    "encoding": "Encoding",
+    "language": "Language",
+    "eol": "EOL"
+  },
+  "sidebar": {
+    "explorer": "Explorer",
+    "search": "Search",
+    "extensions": "Extensions",
+    "noFolderOpened": "No folder opened",
+    "openFolder": "Open Folder"
+  },
+  "tabs": {
+    "close": "Close",
+    "closeOthers": "Close Others",
+    "closeAll": "Close All",
+    "closeSaved": "Close Saved"
+  },
+  "dialog": {
+    "save": "Save",
+    "dontSave": "Don't Save",
+    "cancel": "Cancel",
+    "saveChanges": "Save changes?",
+    "unsavedChanges": "File \"{name}\" has unsaved changes"
+  },
+  "plugins": {
+    "title": "Plugins",
+    "installed": "Installed",
+    "available": "Available",
+    "install": "Install",
+    "uninstall": "Uninstall",
+    "enable": "Enable",
+    "disable": "Disable",
+    "noPlugins": "No plugins installed"
+  },
+  "errors": {
+    "fileNotFound": "File not found",
+    "permissionDenied": "Permission denied",
+    "readError": "Failed to read file",
+    "writeError": "Failed to write file",
+    "unknownError": "Unknown error"
+  }
+}

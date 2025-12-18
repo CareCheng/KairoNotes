@@ -1,0 +1,112 @@
+{
+  "app": {
+    "name": "RustNote",
+    "untitled": "Untitled"
+  },
+  "menu": {
+    "file": "File",
+    "edit": "Edit",
+    "view": "View",
+    "help": "Help"
+  },
+  "file": {
+    "new": "New File",
+    "open": "Open File",
+    "openFolder": "Open Folder",
+    "save": "Save",
+    "saveAs": "Save As",
+    "saveAll": "Save All",
+    "close": "Close",
+    "closeAll": "Close All",
+    "recentFiles": "Recent Files",
+    "clearRecent": "Clear Recent",
+    "exit": "Exit"
+  },
+  "edit": {
+    "undo": "Undo",
+    "redo": "Redo",
+    "cut": "Cut",
+    "copy": "Copy",
+    "paste": "Paste",
+    "selectAll": "Select All",
+    "find": "Find",
+    "replace": "Replace",
+    "findInFiles": "Find in Files",
+    "goToLine": "Go to Line"
+  },
+  "view": {
+    "commandPalette": "Command Palette",
+    "sidebar": "Sidebar",
+    "statusBar": "Status Bar",
+    "minimap": "Minimap",
+    "wordWrap": "Word Wrap",
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out",
+    "resetZoom": "Reset Zoom"
+  },
+  "search": {
+    "placeholder": "Search",
+    "findPlaceholder": "Find",
+    "replacePlaceholder": "Replace",
+    "caseSensitive": "Case Sensitive",
+    "wholeWord": "Whole Word",
+    "useRegex": "Use Regex",
+    "replaceOne": "Replace",
+    "replaceAll": "Replace All",
+    "results": "{{count}} results",
+    "noResults": "No results found"
+  },
+  "settings": {
+    "title": "Settings",
+    "editor": "Editor",
+    "appearance": "Appearance",
+    "language": "Language",
+    "files": "Files",
+    "fontFamily": "Font Family",
+    "fontSize": "Font Size",
+    "tabSize": "Tab Size",
+    "insertSpaces": "Insert Spaces",
+    "wordWrap": "Word Wrap",
+    "lineNumbers": "Line Numbers",
+    "minimap": "Minimap",
+    "theme": "Theme",
+    "autoSave": "Auto Save",
+    "encoding": "Encoding",
+    "eol": "End of Line"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "language": {
+    "zhCN": "简体中文",
+    "zhTW": "繁體中文",
+    "en": "English",
+    "ru": "Русский"
+  },
+  "statusBar": {
+    "line": "Ln",
+    "column": "Col",
+    "encoding": "Encoding",
+    "eol": "EOL",
+    "language": "Language"
+  },
+  "sidebar": {
+    "explorer": "Explorer",
+    "search": "Search",
+    "extensions": "Extensions"
+  },
+  "dialog": {
+    "save": "Save",
+    "dontSave": "Don't Save",
+    "cancel": "Cancel",
+    "saveChanges": "Do you want to save changes to {{name}}?",
+    "unsavedChanges": "Your changes will be lost if you don't save them."
+  },
+  "error": {
+    "openFile": "Failed to open file",
+    "saveFile": "Failed to save file",
+    "readFile": "Failed to read file"
+  }
+}

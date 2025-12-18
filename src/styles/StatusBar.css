@@ -1,0 +1,33 @@
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 22px;
+  padding: 0 var(--spacing-sm);
+  background: var(--accent-color);
+  color: white;
+  font-size: 12px;
+}
+
+.status-left,
+.status-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.status-item {
+  padding: 0 var(--spacing-sm);
+  height: 22px;
+  display: flex;
+  align-items: center;
+}
+
+.status-item.clickable {
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.status-item.clickable:hover {
+  background: rgba(255, 255, 255, 0.1);
+}

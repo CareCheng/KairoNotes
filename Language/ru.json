@@ -1,0 +1,112 @@
+{
+  "app": {
+    "name": "RustNote Редактор",
+    "description": "Современный кроссплатформенный редактор документов"
+  },
+  "file": {
+    "new": "Новый файл",
+    "open": "Открыть файл",
+    "openFolder": "Открыть папку",
+    "save": "Сохранить",
+    "saveAs": "Сохранить как",
+    "close": "Закрыть",
+    "closeAll": "Закрыть все",
+    "recentFiles": "Недавние файлы",
+    "clearRecent": "Очистить историю",
+    "exit": "Выход"
+  },
+  "edit": {
+    "undo": "Отменить",
+    "redo": "Повторить",
+    "cut": "Вырезать",
+    "copy": "Копировать",
+    "paste": "Вставить",
+    "selectAll": "Выделить все",
+    "find": "Найти",
+    "replace": "Заменить",
+    "findInFiles": "Найти в файлах"
+  },
+  "view": {
+    "commandPalette": "Палитра команд",
+    "explorer": "Проводник",
+    "search": "Поиск",
+    "extensions": "Расширения",
+    "terminal": "Терминал",
+    "problems": "Проблемы",
+    "output": "Вывод",
+    "toggleSidebar": "Переключить боковую панель",
+    "toggleStatusBar": "Переключить строку состояния",
+    "zoomIn": "Увеличить",
+    "zoomOut": "Уменьшить",
+    "resetZoom": "Сбросить масштаб"
+  },
+  "settings": {
+    "title": "Настройки",
+    "editor": "Редактор",
+    "appearance": "Внешний вид",
+    "language": "Язык",
+    "theme": "Тема",
+    "fontSize": "Размер шрифта",
+    "fontFamily": "Шрифт",
+    "tabSize": "Размер табуляции",
+    "wordWrap": "Перенос слов",
+    "lineNumbers": "Номера строк",
+    "minimap": "Миникарта",
+    "autoSave": "Автосохранение",
+    "encoding": "Кодировка"
+  },
+  "search": {
+    "placeholder": "Поиск",
+    "replaceWith": "Заменить на",
+    "matchCase": "С учетом регистра",
+    "matchWholeWord": "Слово целиком",
+    "useRegex": "Регулярные выражения",
+    "replaceAll": "Заменить все",
+    "noResults": "Результаты не найдены",
+    "resultsCount": "Найдено {count} результатов"
+  },
+  "statusBar": {
+    "line": "Строка",
+    "column": "Столбец",
+    "encoding": "Кодировка",
+    "language": "Язык",
+    "eol": "Конец строки"
+  },
+  "sidebar": {
+    "explorer": "Проводник",
+    "search": "Поиск",
+    "extensions": "Расширения",
+    "noFolderOpened": "Папка не открыта",
+    "openFolder": "Открыть папку"
+  },
+  "tabs": {
+    "close": "Закрыть",
+    "closeOthers": "Закрыть другие",
+    "closeAll": "Закрыть все",
+    "closeSaved": "Закрыть сохраненные"
+  },
+  "dialog": {
+    "save": "Сохранить",
+    "dontSave": "Не сохранять",
+    "cancel": "Отмена",
+    "saveChanges": "Сохранить изменения?",
+    "unsavedChanges": "Файл \"{name}\" содержит несохраненные изменения"
+  },
+  "plugins": {
+    "title": "Плагины",
+    "installed": "Установленные",
+    "available": "Доступные",
+    "install": "Установить",
+    "uninstall": "Удалить",
+    "enable": "Включить",
+    "disable": "Отключить",
+    "noPlugins": "Нет установленных плагинов"
+  },
+  "errors": {
+    "fileNotFound": "Файл не найден",
+    "permissionDenied": "Доступ запрещен",
+    "readError": "Ошибка чтения файла",
+    "writeError": "Ошибка записи файла",
+    "unknownError": "Неизвестная ошибка"
+  }
+}

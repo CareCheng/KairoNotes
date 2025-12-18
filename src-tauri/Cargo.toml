@@ -1,0 +1,52 @@
+[package]
+name = "rustnote"
+version = "1.0.0"
+description = "A modern cross-platform document editor built with Tauri"
+authors = ["RustNote Team"]
+license = "MIT"
+repository = "https://github.com/rustnote/rustnote-editor"
+edition = "2021"
+rust-version = "1.77.2"
+
+[lib]
+name = "rustnote_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.5.3", features = [] }
+
+[dependencies]
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+log = "0.4"
+tauri = { version = "2.9.5", features = [] }
+tauri-plugin-log = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+tauri-plugin-shell = "2"
+tauri-plugin-clipboard-manager = "2"
+tauri-plugin-window-state = "2"
+tauri-plugin-process = "2"
+encoding_rs = "0.8"
+syntect = "5.2"
+tree-sitter = "0.24"
+regex = "1.10"
+walkdir = "2.5"
+notify = "7.0"
+tokio = { version = "1.45", features = ["full"] }
+thiserror = "2.0"
+anyhow = "1.0"
+chrono = "0.4"
+uuid = { version = "1.11", features = ["v4"] }
+dirs = "6.0"
+
+[features]
+default = []
+custom-protocol = ["tauri/custom-protocol"]
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "z"
+strip = true

@@ -1,0 +1,112 @@
+{
+  "app": {
+    "name": "RustNote 編輯器",
+    "description": "現代化跨平台文檔編輯器"
+  },
+  "file": {
+    "new": "新建檔案",
+    "open": "開啟檔案",
+    "openFolder": "開啟資料夾",
+    "save": "儲存",
+    "saveAs": "另存新檔",
+    "close": "關閉",
+    "closeAll": "關閉全部",
+    "recentFiles": "最近的檔案",
+    "clearRecent": "清除最近記錄",
+    "exit": "結束"
+  },
+  "edit": {
+    "undo": "復原",
+    "redo": "重做",
+    "cut": "剪下",
+    "copy": "複製",
+    "paste": "貼上",
+    "selectAll": "全選",
+    "find": "尋找",
+    "replace": "取代",
+    "findInFiles": "在檔案中尋找"
+  },
+  "view": {
+    "commandPalette": "命令面板",
+    "explorer": "檔案總管",
+    "search": "搜尋",
+    "extensions": "擴充功能",
+    "terminal": "終端機",
+    "problems": "問題",
+    "output": "輸出",
+    "toggleSidebar": "切換側邊欄",
+    "toggleStatusBar": "切換狀態列",
+    "zoomIn": "放大",
+    "zoomOut": "縮小",
+    "resetZoom": "重設縮放"
+  },
+  "settings": {
+    "title": "設定",
+    "editor": "編輯器",
+    "appearance": "外觀",
+    "language": "語言",
+    "theme": "佈景主題",
+    "fontSize": "字型大小",
+    "fontFamily": "字型",
+    "tabSize": "定位字元大小",
+    "wordWrap": "自動換行",
+    "lineNumbers": "行號",
+    "minimap": "小地圖",
+    "autoSave": "自動儲存",
+    "encoding": "編碼"
+  },
+  "search": {
+    "placeholder": "搜尋",
+    "replaceWith": "取代為",
+    "matchCase": "區分大小寫",
+    "matchWholeWord": "全字拼寫",
+    "useRegex": "使用規則運算式",
+    "replaceAll": "全部取代",
+    "noResults": "找不到結果",
+    "resultsCount": "找到 {count} 個結果"
+  },
+  "statusBar": {
+    "line": "行",
+    "column": "欄",
+    "encoding": "編碼",
+    "language": "語言",
+    "eol": "行尾"
+  },
+  "sidebar": {
+    "explorer": "檔案總管",
+    "search": "搜尋",
+    "extensions": "擴充功能",
+    "noFolderOpened": "未開啟資料夾",
+    "openFolder": "開啟資料夾"
+  },
+  "tabs": {
+    "close": "關閉",
+    "closeOthers": "關閉其他",
+    "closeAll": "關閉全部",
+    "closeSaved": "關閉已儲存"
+  },
+  "dialog": {
+    "save": "儲存",
+    "dontSave": "不儲存",
+    "cancel": "取消",
+    "saveChanges": "是否儲存變更？",
+    "unsavedChanges": "檔案「{name}」有未儲存的變更"
+  },
+  "plugins": {
+    "title": "外掛程式",
+    "installed": "已安裝",
+    "available": "可用",
+    "install": "安裝",
+    "uninstall": "解除安裝",
+    "enable": "啟用",
+    "disable": "停用",
+    "noPlugins": "暫無已安裝的外掛程式"
+  },
+  "errors": {
+    "fileNotFound": "找不到檔案",
+    "permissionDenied": "權限被拒絕",
+    "readError": "讀取檔案失敗",
+    "writeError": "寫入檔案失敗",
+    "unknownError": "未知錯誤"
+  }
+}

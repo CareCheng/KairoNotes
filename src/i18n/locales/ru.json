@@ -1,0 +1,112 @@
+{
+  "app": {
+    "name": "RustNote",
+    "untitled": "Без названия"
+  },
+  "menu": {
+    "file": "Файл",
+    "edit": "Редактирование",
+    "view": "Вид",
+    "help": "Справка"
+  },
+  "file": {
+    "new": "Новый файл",
+    "open": "Открыть файл",
+    "openFolder": "Открыть папку",
+    "save": "Сохранить",
+    "saveAs": "Сохранить как",
+    "saveAll": "Сохранить все",
+    "close": "Закрыть",
+    "closeAll": "Закрыть все",
+    "recentFiles": "Недавние файлы",
+    "clearRecent": "Очистить историю",
+    "exit": "Выход"
+  },
+  "edit": {
+    "undo": "Отменить",
+    "redo": "Повторить",
+    "cut": "Вырезать",
+    "copy": "Копировать",
+    "paste": "Вставить",
+    "selectAll": "Выделить все",
+    "find": "Найти",
+    "replace": "Заменить",
+    "findInFiles": "Найти в файлах",
+    "goToLine": "Перейти к строке"
+  },
+  "view": {
+    "commandPalette": "Палитра команд",
+    "sidebar": "Боковая панель",
+    "statusBar": "Строка состояния",
+    "minimap": "Миникарта",
+    "wordWrap": "Перенос слов",
+    "zoomIn": "Увеличить",
+    "zoomOut": "Уменьшить",
+    "resetZoom": "Сбросить масштаб"
+  },
+  "search": {
+    "placeholder": "Поиск",
+    "findPlaceholder": "Найти",
+    "replacePlaceholder": "Заменить",
+    "caseSensitive": "С учётом регистра",
+    "wholeWord": "Слово целиком",
+    "useRegex": "Регулярные выражения",
+    "replaceOne": "Заменить",
+    "replaceAll": "Заменить все",
+    "results": "{{count}} результатов",
+    "noResults": "Ничего не найдено"
+  },
+  "settings": {
+    "title": "Настройки",
+    "editor": "Редактор",
+    "appearance": "Внешний вид",
+    "language": "Язык",
+    "files": "Файлы",
+    "fontFamily": "Шрифт",
+    "fontSize": "Размер шрифта",
+    "tabSize": "Размер табуляции",
+    "insertSpaces": "Пробелы вместо табуляции",
+    "wordWrap": "Перенос слов",
+    "lineNumbers": "Номера строк",
+    "minimap": "Миникарта",
+    "theme": "Тема",
+    "autoSave": "Автосохранение",
+    "encoding": "Кодировка",
+    "eol": "Конец строки"
+  },
+  "theme": {
+    "light": "Светлая",
+    "dark": "Тёмная",
+    "system": "Системная"
+  },
+  "language": {
+    "zhCN": "简体中文",
+    "zhTW": "繁體中文",
+    "en": "English",
+    "ru": "Русский"
+  },
+  "statusBar": {
+    "line": "Стр",
+    "column": "Стлб",
+    "encoding": "Кодировка",
+    "eol": "Конец строки",
+    "language": "Язык"
+  },
+  "sidebar": {
+    "explorer": "Проводник",
+    "search": "Поиск",
+    "extensions": "Расширения"
+  },
+  "dialog": {
+    "save": "Сохранить",
+    "dontSave": "Не сохранять",
+    "cancel": "Отмена",
+    "saveChanges": "Сохранить изменения в {{name}}?",
+    "unsavedChanges": "Несохранённые изменения будут потеряны."
+  },
+  "error": {
+    "openFile": "Не удалось открыть файл",
+    "saveFile": "Не удалось сохранить файл",
+    "readFile": "Не удалось прочитать файл"
+  }
+}

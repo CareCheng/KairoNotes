@@ -1,0 +1,38 @@
+{
+  "id": "example-plugin",
+  "name": "Example Plugin",
+  "version": "1.0.0",
+  "description": "RustNote 示例插件，展示插件开发的基本结构",
+  "author": "RustNote Team",
+  "main": "main.js",
+  "commands": [
+    {
+      "name": "helloWorld",
+      "title": "Hello World",
+      "description": "显示一个 Hello World 消息"
+    },
+    {
+      "name": "insertTimestamp",
+      "title": "Insert Timestamp",
+      "description": "在当前位置插入时间戳"
+    }
+  ],
+  "activationEvents": [
+    "onStartup"
+  ],
+  "contributes": {
+    "menus": [
+      {
+        "command": "example-plugin.helloWorld",
+        "group": "navigation"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "example-plugin.insertTimestamp",
+        "key": "ctrl+shift+t",
+        "when": "editorFocus"
+      }
+    ]
+  }
+}

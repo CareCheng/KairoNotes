@@ -1,0 +1,112 @@
+{
+  "app": {
+    "name": "RustNote 编辑器",
+    "description": "现代化跨平台文档编辑器"
+  },
+  "file": {
+    "new": "新建文件",
+    "open": "打开文件",
+    "openFolder": "打开文件夹",
+    "save": "保存",
+    "saveAs": "另存为",
+    "close": "关闭",
+    "closeAll": "关闭全部",
+    "recentFiles": "最近的文件",
+    "clearRecent": "清除最近记录",
+    "exit": "退出"
+  },
+  "edit": {
+    "undo": "撤销",
+    "redo": "重做",
+    "cut": "剪切",
+    "copy": "复制",
+    "paste": "粘贴",
+    "selectAll": "全选",
+    "find": "查找",
+    "replace": "替换",
+    "findInFiles": "在文件中查找"
+  },
+  "view": {
+    "commandPalette": "命令面板",
+    "explorer": "资源管理器",
+    "search": "搜索",
+    "extensions": "扩展",
+    "terminal": "终端",
+    "problems": "问题",
+    "output": "输出",
+    "toggleSidebar": "切换侧边栏",
+    "toggleStatusBar": "切换状态栏",
+    "zoomIn": "放大",
+    "zoomOut": "缩小",
+    "resetZoom": "重置缩放"
+  },
+  "settings": {
+    "title": "设置",
+    "editor": "编辑器",
+    "appearance": "外观",
+    "language": "语言",
+    "theme": "主题",
+    "fontSize": "字体大小",
+    "fontFamily": "字体",
+    "tabSize": "制表符大小",
+    "wordWrap": "自动换行",
+    "lineNumbers": "行号",
+    "minimap": "小地图",
+    "autoSave": "自动保存",
+    "encoding": "编码"
+  },
+  "search": {
+    "placeholder": "搜索",
+    "replaceWith": "替换为",
+    "matchCase": "区分大小写",
+    "matchWholeWord": "全字匹配",
+    "useRegex": "使用正则表达式",
+    "replaceAll": "全部替换",
+    "noResults": "未找到结果",
+    "resultsCount": "找到 {count} 个结果"
+  },
+  "statusBar": {
+    "line": "行",
+    "column": "列",
+    "encoding": "编码",
+    "language": "语言",
+    "eol": "行尾"
+  },
+  "sidebar": {
+    "explorer": "资源管理器",
+    "search": "搜索",
+    "extensions": "扩展",
+    "noFolderOpened": "未打开文件夹",
+    "openFolder": "打开文件夹"
+  },
+  "tabs": {
+    "close": "关闭",
+    "closeOthers": "关闭其他",
+    "closeAll": "关闭全部",
+    "closeSaved": "关闭已保存"
+  },
+  "dialog": {
+    "save": "保存",
+    "dontSave": "不保存",
+    "cancel": "取消",
+    "saveChanges": "是否保存更改？",
+    "unsavedChanges": "文件 \"{name}\" 有未保存的更改"
+  },
+  "plugins": {
+    "title": "插件",
+    "installed": "已安装",
+    "available": "可用",
+    "install": "安装",
+    "uninstall": "卸载",
+    "enable": "启用",
+    "disable": "禁用",
+    "noPlugins": "暂无已安装的插件"
+  },
+  "errors": {
+    "fileNotFound": "文件未找到",
+    "permissionDenied": "权限被拒绝",
+    "readError": "读取文件失败",
+    "writeError": "写入文件失败",
+    "unknownError": "未知错误"
+  }
+}

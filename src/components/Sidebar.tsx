@@ -3,12 +3,15 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { invoke } from '@tauri-apps/api/core';
+import { writeText } from '@tauri-apps/plugin-clipboard-manager';
 import { useStore } from '../store';
 import { 
   FolderOpen, ChevronRight, ChevronDown,
-  Search, Puzzle, RefreshCw, GitBranch, Plus, Minus
+  Search, Puzzle, RefreshCw, GitBranch, Plus, Minus,
+  FilePlus, FolderPlus, Trash2, Edit3, Copy, ExternalLink, X
 } from 'lucide-react';
 import { FileIcon, getFileIconColor } from './FileIcon';
+import { ContextMenu, ContextMenuItem } from './ContextMenu';
 import '../styles/Sidebar.css';
 import '../styles/FileIcon.css';
 
@@ -31,12 +34,16 @@ type SidebarView = 'explorer' | 'search' | 'git' | 'extensions';
 
 export function Sidebar() {
   const { t } = useTranslation();
-  const { openFolder, sidebarWidth, openFolderDialog, gitStatus, openFile } = useStore();
+  const { openFolder, sidebarWidth, openFolderDialog, gitStatus, openFile, closeFolder } = useStore();
   const [activeView, setActiveView] = useState<SidebarView>('explorer');
   const [tree, setTree] = useState<TreeNode[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<FileEntry[]>([]);
+  const [contextMenu, setContextMenu] = useState<{ position: { x: number; y: number } | null; node: TreeNode | null }>({
+    position: null,
+    node: null,
+  });
 
   useEffect(() => {
     if (openFolder) {
@@ -125,6 +132,157 @@ export function Sidebar() {
     }
   };
 
+  // 右键菜单处理
+  const handleContextMenu = (e: React.MouseEvent, node?: TreeNode) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setContextMenu({
+      position: { x: e.clientX, y: e.clientY },
+      node: node || null,
+    });
+  };
+
+  const closeContextMenu = () => {
+    setContextMenu({ position: null, node: null });
+  };
+
+  const handleCopyPath = async (path: string) => {
+    try {
+      await writeText(path);
+    } catch (error) {
+      console.error('Failed to copy path:', error);
+    }
+  };
+
+  const handleCopyRelativePath = async (path: string) => {
+    if (!openFolder) return;
+    try {
+      const relativePath = path.replace(openFolder, '').replace(/^[/\\]/, '');
+      await writeText(relativePath);
+    } catch (error) {
+      console.error('Failed to copy relative path:', error);
+    }
+  };
+
+  const handleRevealInExplorer = async (path: string) => {
+    try {
+      await invoke('open_in_explorer', { path });
+    } catch (error) {
+      console.error('Failed to reveal in explorer:', error);
+    }
+  };
+
+  const handleDeletePath = async (path: string) => {
+    try {
+      await invoke('delete_path', { path });
+      if (openFolder) {
+        loadDirectory(openFolder);
+      }
+    } catch (error) {
+      console.error('Failed to delete:', error);
+    }
+  };
+
+  // 获取右键菜单项
+  const getContextMenuItems = (): ContextMenuItem[] => {
+    const node = contextMenu.node;
+    
+    // 根目录右键菜单
+    if (!node) {
+      return [
+        {
+          id: 'newFile',
+          label: t('contextMenu.newFile'),
+          icon: <FilePlus size={14} />,
+          onClick: () => console.log('New file'),
+        },
+        {
+          id: 'newFolder',
+          label: t('contextMenu.newFolder'),
+          icon: <FolderPlus size={14} />,
+          onClick: () => console.log('New folder'),
+        },
+        { id: 'sep1', label: '', separator: true },
+        {
+          id: 'refresh',
+          label: t('contextMenu.refresh'),
+          icon: <RefreshCw size={14} />,
+          onClick: () => openFolder && loadDirectory(openFolder),
+        },
+        {
+          id: 'collapseAll',
+          label: t('contextMenu.collapseAll'),
+          onClick: () => setTree(prev => prev.map(n => ({ ...n, isExpanded: false, children: undefined }))),
+        },
+        { id: 'sep2', label: '', separator: true },
+        {
+          id: 'closeFolder',
+          label: t('contextMenu.closeFolder'),
+          icon: <X size={14} />,
+          onClick: closeFolder,
+        },
+      ];
+    }
+
+    // 文件/文件夹右键菜单
+    const items: ContextMenuItem[] = [];
+
+    if (node.isDirectory) {
+      items.push(
+        {
+          id: 'newFile',
+          label: t('contextMenu.newFile'),
+          icon: <FilePlus size={14} />,
+          onClick: () => console.log('New file in', node.path),
+        },
+        {
+          id: 'newFolder',
+          label: t('contextMenu.newFolder'),
+          icon: <FolderPlus size={14} />,
+          onClick: () => console.log('New folder in', node.path),
+        },
+        { id: 'sep1', label: '', separator: true }
+      );
+    }
+
+    items.push(
+      {
+        id: 'copyPath',
+        label: t('contextMenu.copyPath'),
+        icon: <Copy size={14} />,
+        onClick: () => handleCopyPath(node.path),
+      },
+      {
+        id: 'copyRelativePath',
+        label: t('contextMenu.copyRelativePath'),
+        onClick: () => handleCopyRelativePath(node.path),
+      },
+      { id: 'sep2', label: '', separator: true },
+      {
+        id: 'revealInExplorer',
+        label: t('contextMenu.revealInExplorer'),
+        icon: <ExternalLink size={14} />,
+        onClick: () => handleRevealInExplorer(node.path),
+      },
+      { id: 'sep3', label: '', separator: true },
+      {
+        id: 'rename',
+        label: t('contextMenu.rename'),
+        icon: <Edit3 size={14} />,
+        onClick: () => console.log('Rename', node.path),
+      },
+      {
+        id: 'delete',
+        label: t('contextMenu.delete'),
+        icon: <Trash2 size={14} />,
+        danger: true,
+        onClick: () => handleDeletePath(node.path),
+      }
+    );
+
+    return items;
+  };
+
   const renderTree = (nodes: TreeNode[], depth = 0) => {
     // 过滤隐藏文件（除非在根目录）
     const visibleNodes = nodes.filter(n => !n.isHidden);
@@ -135,6 +293,7 @@ export function Sidebar() {
           className={`tree-item ${getFileIconColor(node.name, node.isDirectory)}`}
           style={{ paddingLeft: `${depth * 16 + 8}px` }}
           onClick={(e) => toggleNode(node, e)}
+          onContextMenu={(e) => handleContextMenu(e, node)}
         >
           <span className="tree-arrow">
             {node.isDirectory ? (
@@ -232,8 +391,12 @@ export function Sidebar() {
                 <span>{t('common.loading') || 'Loading...'}</span>
               </div>
             ) : (
-              <div className="file-tree">
-                <div className="tree-root" onClick={() => openFolder && loadDirectory(openFolder)}>
+              <div className="file-tree" onContextMenu={(e) => handleContextMenu(e)}>
+                <div 
+                  className="tree-root" 
+                  onClick={() => openFolder && loadDirectory(openFolder)}
+                  onContextMenu={(e) => handleContextMenu(e)}
+                >
                   <ChevronDown size={14} />
                   <FolderOpen size={16} className="file-icon folder" />
                   <span className="root-name">{openFolder.split(/[/\\]/).pop()}</span>
@@ -333,6 +496,13 @@ export function Sidebar() {
           </div>
         )}
       </div>
+      
+      {/* 右键菜单 */}
+      <ContextMenu
+        items={getContextMenuItems()}
+        position={contextMenu.position}
+        onClose={closeContextMenu}
+      />
     </motion.div>
   );
 }

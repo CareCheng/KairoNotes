@@ -2,17 +2,21 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { useStore } from '../store';
-import { Minus, Square, X, Copy } from 'lucide-react';
+import { Minus, Square, X, Copy, Sun, Moon } from 'lucide-react';
 import { MenuBar } from './MenuBar';
 import '../styles/TitleBar.css';
 
 export function TitleBar() {
   const { t } = useTranslation();
-  const { tabs, activeTabId } = useStore();
+  const { tabs, activeTabId, theme, setTheme } = useStore();
   const [isMaximized, setIsMaximized] = useState(false);
 
   const activeTab = tabs.find(t => t.id === activeTabId);
   const title = activeTab ? `${activeTab.name}${activeTab.isModified ? ' •' : ''} - KairoNotes` : 'KairoNotes';
+
+  const handleToggleTheme = useCallback(() => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  }, [theme, setTheme]);
 
   // 监听窗口最大化状态
   useEffect(() => {
@@ -90,6 +94,13 @@ export function TitleBar() {
       </div>
       
       <div className="title-bar-right">
+        <button 
+          className="window-btn theme-toggle-btn" 
+          onClick={handleToggleTheme} 
+          title={theme === 'dark' ? (t('theme.light') || '浅色') : (t('theme.dark') || '深色')}
+        >
+          {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+        </button>
         <button className="window-btn" onClick={handleMinimize} title={t('window.minimize') || '最小化'}>
           <Minus size={14} />
         </button>

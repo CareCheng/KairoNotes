@@ -3,29 +3,14 @@
   "version": "1.0.0",
   "identifier": "com.kaironotes.editor",
   "build": {
-    "frontendDist": "gui",
     "devUrl": "http://localhost:5173",
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": ""
   },
   "app": {
-    "windows": [
-      {
-        "title": "KairoNotes",
-        "width": 1400,
-        "height": 900,
-        "minWidth": 800,
-        "minHeight": 600,
-        "resizable": true,
-        "fullscreen": false,
-        "center": true,
-        "decorations": false,
-        "transparent": false,
-        "visible": true
-      }
-    ],
+    "windows": [],
     "security": {
-      "csp": "default-src 'self' asset: https://asset.localhost https://cdn.jsdelivr.net; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: asset: https://asset.localhost https:; font-src 'self' data: asset: https://asset.localhost https://cdn.jsdelivr.net; connect-src 'self' https: asset: https://asset.localhost; worker-src 'self' blob:"
+      "csp": "default-src 'self' kairogui: asset: https://asset.localhost https://cdn.jsdelivr.net; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: kairogui: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' kairogui: https://cdn.jsdelivr.net; img-src 'self' data: asset: kairogui: https://asset.localhost https:; font-src 'self' data: asset: kairogui: https://asset.localhost https://cdn.jsdelivr.net; connect-src 'self' https: asset: kairogui: https://asset.localhost; worker-src 'self' blob:"
     }
   },
   "bundle": {
@@ -38,10 +23,7 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "resources": [
-      "../Language/**/*",
-      "../Plugins/**/*"
-    ],
+    "resources": [],
     "externalBin": [],
     "category": "DeveloperTool",
     "shortDescription": "Modern Document Editor",

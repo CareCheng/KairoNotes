@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { invoke } from '@tauri-apps/api/core';
 import { useStore } from '../store';
 import { X, Plus, ChevronUp, ChevronDown, Terminal as TerminalIcon } from 'lucide-react';
 import '../styles/Terminal.css';
@@ -13,12 +14,18 @@ interface TerminalLine {
   timestamp: Date;
 }
 
+interface TerminalOutput {
+  stdout: string;
+  stderr: string;
+  exitCode: number | null;
+}
+
 export function Terminal() {
   const { t } = useTranslation();
   const {
     showTerminal, toggleTerminal, terminalHeight, setTerminalHeight,
     terminals, activeTerminalId, createTerminal, closeTerminal, setActiveTerminal,
-    openFolder
+    openFolder, settings
   } = useStore();
   
   const [lines, setLines] = useState<TerminalLine[]>([]);
@@ -26,6 +33,7 @@ export function Terminal() {
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [isResizing, setIsResizing] = useState(false);
+  const [isExecuting, setIsExecuting] = useState(false);
   
   const inputRef = useRef<HTMLInputElement>(null);
   const outputRef = useRef<HTMLDivElement>(null);
@@ -45,7 +53,7 @@ export function Terminal() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || isExecuting) return;
 
     const newLine: TerminalLine = {
       id: ++lineIdRef.current,
@@ -57,39 +65,70 @@ export function Terminal() {
     setHistory(prev => [input, ...prev].slice(0, 100));
     setHistoryIndex(-1);
 
-    // Simulate command execution
-    const cmd = input.trim().toLowerCase();
-    let output = '';
+    const cmd = input.trim();
+    const cmdLower = cmd.toLowerCase();
     
-    if (cmd === 'clear' || cmd === 'cls') {
+    // Handle built-in commands
+    if (cmdLower === 'clear' || cmdLower === 'cls') {
       setLines([]);
       setInput('');
       return;
-    } else if (cmd === 'help') {
-      output = `Available commands:
-  clear/cls  - Clear terminal
-  pwd        - Print working directory
-  echo       - Print text
-  date       - Show current date
-  help       - Show this help`;
-    } else if (cmd === 'pwd') {
-      output = openFolder || '~';
-    } else if (cmd.startsWith('echo ')) {
-      output = input.slice(5);
-    } else if (cmd === 'date') {
-      output = new Date().toLocaleString();
-    } else {
-      output = `Command not found: ${input.split(' ')[0]}`;
     }
-
-    const outputLine: TerminalLine = {
-      id: ++lineIdRef.current,
-      type: 'output',
-      content: output,
-      timestamp: new Date(),
-    };
-    setLines(prev => [...prev, outputLine]);
+    
     setInput('');
+    setIsExecuting(true);
+    
+    try {
+      // Execute command using the configured terminal type
+      const result: TerminalOutput = await invoke('execute_terminal_command', {
+        command: cmd,
+        cwd: openFolder || undefined,
+        terminalType: settings.terminalType || 'powershell',
+      });
+      
+      // Add stdout
+      if (result.stdout) {
+        const outputLine: TerminalLine = {
+          id: ++lineIdRef.current,
+          type: 'output',
+          content: result.stdout.trimEnd(),
+          timestamp: new Date(),
+        };
+        setLines(prev => [...prev, outputLine]);
+      }
+      
+      // Add stderr
+      if (result.stderr) {
+        const errorLine: TerminalLine = {
+          id: ++lineIdRef.current,
+          type: 'error',
+          content: result.stderr.trimEnd(),
+          timestamp: new Date(),
+        };
+        setLines(prev => [...prev, errorLine]);
+      }
+      
+      // Show exit code if non-zero
+      if (result.exitCode !== null && result.exitCode !== 0) {
+        const exitLine: TerminalLine = {
+          id: ++lineIdRef.current,
+          type: 'error',
+          content: `Process exited with code ${result.exitCode}`,
+          timestamp: new Date(),
+        };
+        setLines(prev => [...prev, exitLine]);
+      }
+    } catch (error) {
+      const errorLine: TerminalLine = {
+        id: ++lineIdRef.current,
+        type: 'error',
+        content: `Error: ${error}`,
+        timestamp: new Date(),
+      };
+      setLines(prev => [...prev, errorLine]);
+    } finally {
+      setIsExecuting(false);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

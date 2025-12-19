@@ -53,6 +53,16 @@ export interface EditorSettings {
   autoClosingQuotes: boolean;
   formatOnSave: boolean;
   formatOnPaste: boolean;
+  // 极限模式 - 只保留最基础的编辑功能
+  extremeMode: boolean;
+  // 作为系统默认编辑器
+  registerAsDefaultEditor: boolean;
+  // 作为 PATH 编辑器
+  registerAsPathEditor: boolean;
+  // 添加到右键菜单
+  addToContextMenu: boolean;
+  // 终端设置
+  terminalType: string;
 }
 
 export interface SearchResult {
@@ -131,6 +141,7 @@ interface AppState {
   showTerminal: boolean;
   showMarkdownPreview: boolean;
   showDiffView: boolean;
+  showAbout: boolean;
   sidebarWidth: number;
   terminalHeight: number;
   panelPosition: 'bottom' | 'right';
@@ -167,6 +178,19 @@ interface AppState {
   // Character Stats
   characterCount: { chars: number; words: number; lines: number } | null;
 
+  // Editor Reference (for menu actions)
+  editorInstance: any | null;
+  setEditorInstance: (editor: any) => void;
+  
+  // Editor Actions (for menu)
+  editorUndo: () => void;
+  editorRedo: () => void;
+  editorCut: () => void;
+  editorCopy: () => void;
+  editorPaste: () => void;
+  editorSelectAll: () => void;
+  editorGoToLine: () => void;
+
   // Actions - Tabs
   createTab: (content?: string, language?: string, name?: string) => void;
   closeTab: (id: string) => void;
@@ -197,6 +221,7 @@ interface AppState {
   toggleTerminal: () => void;
   toggleMarkdownPreview: () => void;
   toggleDiffView: () => void;
+  toggleAbout: () => void;
   setSidebarWidth: (width: number) => void;
   setTerminalHeight: (height: number) => void;
   
@@ -272,12 +297,17 @@ const defaultSettings: EditorSettings = {
   restoreWindows: true,
   showStatusBar: true,
   showActivityBar: true,
-  showSidebar: true,
+  showSidebar: false, // 默认不显示侧边栏，打开文件夹后才显示
   bracketPairColorization: true,
   autoClosingBrackets: true,
   autoClosingQuotes: true,
   formatOnSave: false,
   formatOnPaste: false,
+  extremeMode: false,
+  registerAsDefaultEditor: false,
+  registerAsPathEditor: false,
+  addToContextMenu: false,
+  terminalType: 'powershell',
 };
 
 let tabCounter = 0;
@@ -300,6 +330,7 @@ export const useStore = create<AppState>()(
       showTerminal: false,
       showMarkdownPreview: false,
       showDiffView: false,
+      showAbout: false,
       sidebarWidth: 250,
       terminalHeight: 200,
       panelPosition: 'bottom',
@@ -321,6 +352,54 @@ export const useStore = create<AppState>()(
       gitEnabled: true,
       sessionRestored: false,
       characterCount: null,
+      editorInstance: null,
+
+      // Editor Instance
+      setEditorInstance: (editor) => set({ editorInstance: editor }),
+      
+      // Editor Actions
+      editorUndo: () => {
+        const editor = get().editorInstance;
+        if (editor) {
+          editor.trigger('keyboard', 'undo', null);
+        }
+      },
+      editorRedo: () => {
+        const editor = get().editorInstance;
+        if (editor) {
+          editor.trigger('keyboard', 'redo', null);
+        }
+      },
+      editorCut: () => {
+        const editor = get().editorInstance;
+        if (editor) {
+          editor.trigger('keyboard', 'editor.action.clipboardCutAction', null);
+        }
+      },
+      editorCopy: () => {
+        const editor = get().editorInstance;
+        if (editor) {
+          editor.trigger('keyboard', 'editor.action.clipboardCopyAction', null);
+        }
+      },
+      editorPaste: () => {
+        const editor = get().editorInstance;
+        if (editor) {
+          editor.trigger('keyboard', 'editor.action.clipboardPasteAction', null);
+        }
+      },
+      editorSelectAll: () => {
+        const editor = get().editorInstance;
+        if (editor) {
+          editor.trigger('keyboard', 'editor.action.selectAll', null);
+        }
+      },
+      editorGoToLine: () => {
+        const editor = get().editorInstance;
+        if (editor) {
+          editor.trigger('keyboard', 'editor.action.gotoLine', null);
+        }
+      },
 
       // Tab Actions
       createTab: (content = '', language = 'plaintext', name?: string) => {
@@ -535,7 +614,12 @@ export const useStore = create<AppState>()(
       },
 
       // UI Actions
-      setTheme: (theme) => set({ theme }),
+      setTheme: (theme) => {
+        const themeValue = theme === 'dark' ? 'vs-dark' : 'vs';
+        set({ theme });
+        // 同时保存到配置文件
+        get().updateSettings({ theme: themeValue });
+      },
       toggleSearch: () => set((state) => ({ showSearch: !state.showSearch, showGlobalSearch: false })),
       toggleGlobalSearch: () => set((state) => ({ showGlobalSearch: !state.showGlobalSearch, showSearch: false })),
       toggleSettings: () => set((state) => ({ showSettings: !state.showSettings })),
@@ -543,6 +627,7 @@ export const useStore = create<AppState>()(
       toggleTerminal: () => set((state) => ({ showTerminal: !state.showTerminal })),
       toggleMarkdownPreview: () => set((state) => ({ showMarkdownPreview: !state.showMarkdownPreview })),
       toggleDiffView: () => set((state) => ({ showDiffView: !state.showDiffView })),
+      toggleAbout: () => set((state) => ({ showAbout: !state.showAbout })),
       setSidebarWidth: (width) => set({ sidebarWidth: width }),
       setTerminalHeight: (height) => set({ terminalHeight: height }),
 

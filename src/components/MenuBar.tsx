@@ -119,9 +119,10 @@ export function MenuBar() {
   const {
     createTab, openFile, saveFile, saveFileAs, saveAllFiles, closeTab, closeAllTabs, closeSavedTabs,
     activeTabId, toggleSearch, toggleGlobalSearch, toggleSettings, toggleCommandPalette,
-    toggleTerminal, toggleMarkdownPreview, toggleDiffView,
+    toggleTerminal, toggleMarkdownPreview, toggleDiffView, toggleAbout,
     setTheme, theme, settings, updateSettings, openFolderDialog, closeFolder,
-    splitEditor, formatDocument, recentFiles, clearRecentFiles
+    splitEditor, formatDocument, recentFiles, clearRecentFiles,
+    editorUndo, editorRedo, editorCut, editorCopy, editorPaste, editorSelectAll, editorGoToLine
   } = useStore();
 
   const fileMenu: MenuItem[] = [
@@ -164,18 +165,18 @@ export function MenuBar() {
   ];
 
   const editMenu: MenuItem[] = [
-    { id: 'undo', label: t('edit.undo'), shortcut: 'Ctrl+Z' },
-    { id: 'redo', label: t('edit.redo'), shortcut: 'Ctrl+Y' },
+    { id: 'undo', label: t('edit.undo'), shortcut: 'Ctrl+Z', action: editorUndo },
+    { id: 'redo', label: t('edit.redo'), shortcut: 'Ctrl+Y', action: editorRedo },
     { id: 'separator1', label: '', separator: true },
-    { id: 'cut', label: t('edit.cut'), shortcut: 'Ctrl+X' },
-    { id: 'copy', label: t('edit.copy'), shortcut: 'Ctrl+C' },
-    { id: 'paste', label: t('edit.paste'), shortcut: 'Ctrl+V' },
+    { id: 'cut', label: t('edit.cut'), shortcut: 'Ctrl+X', action: editorCut },
+    { id: 'copy', label: t('edit.copy'), shortcut: 'Ctrl+C', action: editorCopy },
+    { id: 'paste', label: t('edit.paste'), shortcut: 'Ctrl+V', action: editorPaste },
     { id: 'separator2', label: '', separator: true },
     { id: 'find', label: t('edit.find'), shortcut: 'Ctrl+F', action: toggleSearch },
     { id: 'replace', label: t('edit.replace'), shortcut: 'Ctrl+H', action: toggleSearch },
     { id: 'findInFiles', label: t('edit.findInFiles'), shortcut: 'Ctrl+Shift+F', action: toggleGlobalSearch },
     { id: 'separator3', label: '', separator: true },
-    { id: 'selectAll', label: t('edit.selectAll'), shortcut: 'Ctrl+A' },
+    { id: 'selectAll', label: t('edit.selectAll'), shortcut: 'Ctrl+A', action: editorSelectAll },
     {
       id: 'selection', label: t('edit.selection'),
       submenu: [
@@ -256,7 +257,7 @@ export function MenuBar() {
     { id: 'separator1', label: '', separator: true },
     { id: 'goToFile', label: t('go.goToFile'), shortcut: 'Ctrl+P', action: toggleCommandPalette },
     { id: 'goToSymbol', label: t('go.goToSymbol'), shortcut: 'Ctrl+Shift+O' },
-    { id: 'goToLine', label: t('go.goToLine'), shortcut: 'Ctrl+G' },
+    { id: 'goToLine', label: t('go.goToLine'), shortcut: 'Ctrl+G', action: editorGoToLine },
     { id: 'separator2', label: '', separator: true },
     { id: 'goToDefinition', label: t('go.goToDefinition'), shortcut: 'F12' },
     { id: 'goToDeclaration', label: t('go.goToDeclaration') },
@@ -323,7 +324,8 @@ export function MenuBar() {
     { id: 'separator3', label: '', separator: true },
     { id: 'checkUpdates', label: t('help.checkUpdates') },
     { id: 'separator4', label: '', separator: true },
-    { id: 'about', label: t('help.about'), action: toggleSettings },
+    { id: 'settings', label: t('settings.title'), shortcut: 'Ctrl+,', action: toggleSettings },
+    { id: 'about', label: t('help.about'), action: toggleAbout },
   ];
 
   return (

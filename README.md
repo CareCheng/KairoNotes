@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  基于 Tauri + React + Monaco Editor 构建
+  基于 Tauri 2.x + React + Monaco Editor 构建
 </p>
 
 ---
@@ -26,7 +26,10 @@
 - 🔤 **字体管理** - 系统字体扫描、自定义字体支持
 - 🔌 **插件系统** - 可扩展的插件架构
 - 💾 **会话恢复** - 自动保存和恢复工作状态
+- ⚡ **极限模式** - 简化界面，专注编辑
 - 🖥️ **跨平台** - Windows、macOS、Linux
+- 💻 **内置终端** - 支持 PowerShell、CMD、WSL、Git Bash
+- 🔧 **系统集成** - 默认编辑器、PATH、右键菜单
 
 ## 📸 截图
 
@@ -63,24 +66,33 @@ npm run tauri dev
 #### 生产构建
 
 ```powershell
-# Windows
-.\scripts\build.ps1
+# Windows - 构建标准版
+.\scripts\build.ps1 -release
 
-# 包含安装程序
-.\scripts\build.ps1 -Installer
+# 构建 MSI 安装包
+.\scripts\build.ps1 -packmsi
+
+# 构建 EXE 安装包
+.\scripts\build.ps1 -packexe
+
+# 清理后构建
+.\scripts\build.ps1 -clean -release
 ```
 
 ```bash
 # macOS / Linux
-./scripts/build.sh
+./scripts/build.sh --release
 ```
 
 ## 📂 目录结构
 
 ```
-dist-release/
+dist/release/
 ├── kaironotes.exe    # 主程序
-├── dist/             # 前端资源（可热更新）
+├── config/           # 配置文件目录
+│   ├── settings.json # 用户设置
+│   └── recent_files.json
+├── gui/              # 前端资源（可热更新）
 ├── Language/         # 语言文件（可热更新）
 │   ├── zh-CN.json    # 简体中文
 │   ├── zh-TW.json    # 繁体中文
@@ -89,6 +101,17 @@ dist-release/
 ├── Plugins/          # 插件目录
 └── Fonts/            # 自定义字体
 ```
+
+## ⚡ 极限模式
+
+极限模式是 KairoNotes 的简化模式，只保留最基础的文档编辑功能：
+
+- 隐藏侧边栏、终端等高级功能
+- 保留代码语法高亮
+- 保留搜索替换功能
+- 适合作为简单的文本编辑器使用
+
+在设置 → 编辑器中启用极限模式。
 
 ## ⌨️ 快捷键
 
@@ -103,6 +126,12 @@ dist-release/
 | 命令面板 | `Ctrl+Shift+P` |
 | 转到行 | `Ctrl+G` |
 | 切换终端 | `Ctrl+\`` |
+| 撤销 | `Ctrl+Z` |
+| 重做 | `Ctrl+Y` |
+| 剪切 | `Ctrl+X` |
+| 复制 | `Ctrl+C` |
+| 粘贴 | `Ctrl+V` |
+| 全选 | `Ctrl+A` |
 | 设置 | `Ctrl+,` |
 
 ## 🔌 插件开发
@@ -112,6 +141,10 @@ dist-release/
 ## 🛠️ 技术文档
 
 参见 [技术文档](docs/TECHNICAL.md)
+
+## 📋 功能支持列表
+
+参见 [功能支持列表](docs/FEATURES.md) - 完整的功能清单和状态
 
 ## 🌐 添加新语言
 
@@ -135,6 +168,38 @@ dist-release/
 - **中欧**: ISO-8859-2, Windows-1250
 - **俄文**: Windows-1251, KOI8-R/U, ISO-8859-5
 - **更多**: 希腊文、土耳其文、希伯来文、阿拉伯文、泰文、越南文、波罗的海语系
+
+## 🖥️ 系统集成
+
+KairoNotes 支持深度系统集成：
+
+- **默认文本编辑器** - 双击文本文件时使用 KairoNotes 打开
+- **PATH 编辑器** - 在命令行中使用 `kaironotes` 命令打开文件
+- **右键菜单集成** - 在文件和文件夹的右键菜单中添加"用 KairoNotes 打开"选项
+
+在设置 → 文件 → 系统集成中配置这些选项。
+
+## 💻 内置终端
+
+KairoNotes 内置了功能完整的终端，支持多种 Shell：
+
+- **PowerShell** - Windows 默认终端
+- **CMD** - Windows 命令提示符
+- **PowerShell Core (pwsh)** - 跨平台 PowerShell
+- **WSL** - Windows Subsystem for Linux
+- **Git Bash** - Git 自带的 Bash 终端
+
+在设置 → 文件 → 终端中选择您喜欢的终端类型。
+
+## 📁 配置文件
+
+配置文件保存在程序目录下的 `config` 文件夹中，支持便携式使用：
+
+```
+config/
+├── settings.json      # 用户设置
+└── recent_files.json  # 最近文件记录
+```
 
 ## 🤝 贡献
 

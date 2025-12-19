@@ -208,7 +208,18 @@
     "trimTrailingWhitespace": "Trim Trailing Whitespace",
     "insertFinalNewline": "Insert Final Newline",
     "colorTheme": "Color Theme",
-    "keyboardShortcuts": "Keyboard Shortcuts"
+    "keyboardShortcuts": "Keyboard Shortcuts",
+    "extremeMode": "Extreme Mode",
+    "enableExtremeMode": "Enable Extreme Mode",
+    "extremeModeDesc": "Extreme mode keeps only basic document editing features, hiding sidebar, terminal and other advanced features. Ideal for use as a simple text editor.",
+    "systemIntegration": "System Integration",
+    "registerAsDefaultEditor": "Register as Default Text Editor",
+    "registerAsPathEditor": "Register as PATH Editor",
+    "addToContextMenu": "Add to Context Menu",
+    "contextMenuDesc": "Add 'Open with KairoNotes' option to file and folder context menus",
+    "terminal": "Terminal",
+    "terminalType": "Terminal Type",
+    "terminalTypeDesc": "Select the shell type for the built-in terminal"
   },
   "language": {
     "zhCN": "简体中文",
@@ -301,5 +312,21 @@
     "monospace": "Monospace",
     "system": "System",
     "custom": "Custom"
+  },
+  "contextMenu": {
+    "newFile": "New File",
+    "newFolder": "New Folder",
+    "openFile": "Open File",
+    "openFolder": "Open Folder",
+    "closeFolder": "Close Folder",
+    "rename": "Rename",
+    "delete": "Delete",
+    "copyPath": "Copy Path",
+    "copyRelativePath": "Copy Relative Path",
+    "revealInExplorer": "Reveal in Explorer",
+    "refresh": "Refresh",
+    "collapseAll": "Collapse All",
+    "settings": "Settings",
+    "about": "About KairoNotes"
   }
 }

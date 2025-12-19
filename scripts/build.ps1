@@ -1,19 +1,30 @@
 # KairoNotes - Unified Build Script for Windows
 # Usage:
-#   .\build.ps1 --release    构建标准版到 /dist/release
-#   .\build.ps1 --debug      构建开发版到 /dist/debug
-#   .\build.ps1 --packmsi    构建 MSI 安装包到 /dist/packmsi
-#   .\build.ps1 --packexe    构建 EXE 安装包到 /dist/packexe
-#   .\build.ps1 --clean      清理所有构建文件
+#   .\build.ps1 -release    构建标准版到 /dist/release
+#   .\build.ps1 -dbg        构建开发版到 /dist/debug
+#   .\build.ps1 -packmsi    构建 MSI 安装包到 /dist/packmsi
+#   .\build.ps1 -packexe    构建 EXE 安装包到 /dist/packexe
+#   .\build.ps1 -clean      清理所有构建文件
 
-param(
-    [switch]$release,
-    [switch]$debug,
-    [switch]$packmsi,
-    [switch]$packexe,
-    [switch]$clean,
-    [switch]$help
-)
+# 初始化变量
+$release = $false
+$dbg = $false
+$packmsi = $false
+$packexe = $false
+$clean = $false
+$showhelp = $false
+
+# 手动解析所有参数，支持 -xxx 和 --xxx 格式
+foreach ($arg in $args) {
+    switch -Regex ($arg) {
+        "^(-r|--release|-release)$" { $release = $true }
+        "^(-d|--debug|-dbg|-debug)$" { $dbg = $true }
+        "^(--packmsi|-packmsi)$" { $packmsi = $true }
+        "^(--packexe|-packexe)$" { $packexe = $true }
+        "^(-c|--clean|-clean)$" { $clean = $true }
+        "^(-h|--help|-help|\?)$" { $showhelp = $true }
+    }
+}
 
 # 获取项目根目录
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -22,7 +33,7 @@ $DistRoot = Join-Path $ProjectRoot "dist"
 $BuildDir = Join-Path $DistRoot "build"
 
 # 显示帮助
-if ($help -or (-not $release -and -not $debug -and -not $packmsi -and -not $packexe -and -not $clean)) {
+if ($showhelp -or (-not $release -and -not $dbg -and -not $packmsi -and -not $packexe -and -not $clean)) {
     Write-Host @"
 ========================================
   KairoNotes Build Script
@@ -32,31 +43,33 @@ Usage:
   .\build.ps1 [options]
 
 Options:
-  --release    构建标准版 (Release)，输出到 /dist/release
-  --debug      构建开发版 (Debug)，输出到 /dist/debug
-  --packmsi    构建 MSI 安装包，输出到 /dist/packmsi
-  --packexe    构建 EXE 安装包 (NSIS)，输出到 /dist/packexe
-  --clean      清理所有构建文件 (/dist 目录)
-  --help       显示此帮助信息
+  -release     构建标准版 (Release)，输出到 /dist/release
+  -dbg         构建开发版 (Debug)，输出到 /dist/debug
+  -packmsi     构建 MSI 安装包，输出到 /dist/packmsi
+  -packexe     构建 EXE 安装包 (NSIS)，输出到 /dist/packexe
+  -clean       清理所有构建文件 (/dist 目录)
+  -showhelp    显示此帮助信息
+
+Also supports: --release, --debug, --packmsi, --packexe, --clean, --help
 
 Examples:
-  .\build.ps1 --release          # 构建标准版
-  .\build.ps1 --debug            # 构建开发版
-  .\build.ps1 --packmsi          # 构建 MSI 安装包
-  .\build.ps1 --clean --release  # 清理后构建标准版
+  .\build.ps1 -release          # 构建标准版
+  .\build.ps1 -dbg              # 构建开发版
+  .\build.ps1 -packmsi          # 构建 MSI 安装包
+  .\build.ps1 -clean -release   # 清理后构建标准版
 
 Output Structure:
   /dist/
-    ├── release/     # 标准版输出
-    │   ├── kaironotes.exe
-    │   ├── gui/     # 前端资源
-    │   ├── Language/
-    │   ├── Plugins/
-    │   └── Fonts/
-    ├── debug/       # 开发版输出
-    ├── packmsi/     # MSI 安装包
-    ├── packexe/     # EXE 安装包
-    └── build/       # 构建中间文件
+    +-- release/     # 标准版输出
+    |   +-- kaironotes.exe
+    |   +-- gui/     # 前端资源
+    |   +-- Language/
+    |   +-- Plugins/
+    |   +-- Fonts/
+    +-- debug/       # 开发版输出
+    +-- packmsi/     # MSI 安装包
+    +-- packexe/     # EXE 安装包
+    +-- build/       # 构建中间文件
 "@
     exit 0
 }
@@ -89,7 +102,7 @@ if ($clean) {
         Write-Info "Nothing to clean"
     }
     
-    if (-not $release -and -not $debug -and -not $packmsi -and -not $packexe) {
+    if (-not $release -and -not $dbg -and -not $packmsi -and -not $packexe) {
         exit 0
     }
 }
@@ -100,7 +113,7 @@ $IsDebug = $false
 $OutputDir = ""
 $BundleTarget = ""
 
-if ($debug) {
+if ($dbg) {
     $BuildType = "debug"
     $IsDebug = $true
     $OutputDir = Join-Path $DistRoot "debug"
@@ -129,8 +142,27 @@ if (-not (Test-Path $OutputDir)) { New-Item -ItemType Directory -Force -Path $Ou
 
 Push-Location $ProjectRoot
 try {
-    # Step 1: 安装依赖
+    # Step 1: 安装依赖到 dist/build/node_modules
     Write-Step "1/5" "Installing dependencies..."
+    $NodeModulesDir = Join-Path $BuildDir "node_modules"
+    
+    # 如果 dist/build/node_modules 不存在，从项目根目录移动或安装
+    if (-not (Test-Path $NodeModulesDir)) {
+        $RootNodeModules = Join-Path $ProjectRoot "node_modules"
+        if (Test-Path $RootNodeModules) {
+            # 移动现有的 node_modules 到 build 目录
+            Write-Info "Moving node_modules to build directory..."
+            Move-Item $RootNodeModules $NodeModulesDir -Force
+        }
+    }
+    
+    # 创建符号链接让 npm 可以正常工作
+    $RootNodeModules = Join-Path $ProjectRoot "node_modules"
+    if (-not (Test-Path $RootNodeModules)) {
+        # 创建目录连接 (junction)
+        cmd /c mklink /J "$RootNodeModules" "$NodeModulesDir" 2>&1 | Out-Null
+    }
+    
     & npm install --prefer-offline 2>&1 | Out-Null
     if ($LASTEXITCODE -ne 0) { throw "npm install failed" }
     Write-Success "Dependencies installed"
@@ -206,6 +238,21 @@ try {
         Write-Info "Created: Fonts/"
     }
 
+    # 复制或创建 config 目录
+    $ConfigSrc = Join-Path $ProjectRoot "config"
+    $ConfigDst = Join-Path $OutputDir "config"
+    if (Test-Path $ConfigSrc) {
+        if (Test-Path $ConfigDst) { Remove-Item -Recurse -Force $ConfigDst }
+        Copy-Item -Recurse $ConfigSrc $ConfigDst
+        Write-Info "Copied: config/"
+    } else {
+        # 创建默认配置目录和文件
+        if (-not (Test-Path $ConfigDst)) {
+            New-Item -ItemType Directory -Force -Path $ConfigDst | Out-Null
+        }
+        Write-Info "Created: config/"
+    }
+
     # Step 5: 构建安装包 (如果需要)
     if ($BundleTarget) {
         Write-Step "5/5" "Building installer ($BundleTarget)..."
@@ -253,11 +300,12 @@ try {
     Write-Host "`nOutput: $OutputDir" -ForegroundColor White
     Write-Host "`nDirectory structure:" -ForegroundColor Gray
     Write-Host "  $OutputDir\" -ForegroundColor Gray
-    Write-Host "  ├── kaironotes.exe" -ForegroundColor Gray
-    Write-Host "  ├── gui/           # 前端资源" -ForegroundColor Gray
-    Write-Host "  ├── Language/      # 语言文件 (可热更新)" -ForegroundColor Gray
-    Write-Host "  ├── Plugins/       # 插件目录 (可热更新)" -ForegroundColor Gray
-    Write-Host "  └── Fonts/         # 字体目录 (可热更新)" -ForegroundColor Gray
+    Write-Host "  +-- kaironotes.exe" -ForegroundColor Gray
+    Write-Host "  +-- config/        # Configuration files" -ForegroundColor Gray
+    Write-Host "  +-- gui/           # Frontend resources" -ForegroundColor Gray
+    Write-Host "  +-- Language/      # Language files (hot-update)" -ForegroundColor Gray
+    Write-Host "  +-- Plugins/       # Plugin directory (hot-update)" -ForegroundColor Gray
+    Write-Host "  +-- Fonts/         # Font directory (hot-update)" -ForegroundColor Gray
     Write-Host "`nRun: $OutputDir\kaironotes.exe" -ForegroundColor Yellow
 
 } catch {

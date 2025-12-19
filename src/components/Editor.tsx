@@ -148,7 +148,8 @@ export function Editor() {
   const { t } = useTranslation();
   const { 
     tabs, activeTabId, updateTabContent, updateCursorPosition,
-    settings, theme, createTab, openFile, saveFile, toggleSearch
+    settings, theme, createTab, openFile, saveFile, toggleSearch,
+    setEditorInstance
   } = useStore();
   
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
@@ -184,6 +185,9 @@ export function Editor() {
   const handleEditorMount: OnMount = useCallback((editor, monaco) => {
     editorRef.current = editor;
     monacoRef.current = monaco;
+    
+    // 保存编辑器实例到 store，供菜单操作使用
+    setEditorInstance(editor);
     
     // 确保语法高亮正确设置
     const model = editor.getModel();

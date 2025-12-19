@@ -117,18 +117,18 @@ pub async fn search_and_replace(
 
 // Recent Files
 #[tauri::command]
-pub async fn get_recent_files(app: AppHandle) -> Result<Vec<String>, String> {
-    settings::get_recent_files(&app).await.map_err(|e| e.to_string())
+pub async fn get_recent_files() -> Result<Vec<String>, String> {
+    settings::get_recent_files().await.map_err(|e| e.to_string())
 }
 
 #[tauri::command]
-pub async fn add_recent_file(app: AppHandle, path: String) -> Result<(), String> {
-    settings::add_recent_file(&app, &path).await.map_err(|e| e.to_string())
+pub async fn add_recent_file(path: String) -> Result<(), String> {
+    settings::add_recent_file(&path).await.map_err(|e| e.to_string())
 }
 
 #[tauri::command]
-pub async fn clear_recent_files(app: AppHandle) -> Result<(), String> {
-    settings::clear_recent_files(&app).await.map_err(|e| e.to_string())
+pub async fn clear_recent_files() -> Result<(), String> {
+    settings::clear_recent_files().await.map_err(|e| e.to_string())
 }
 
 // Encoding
@@ -163,13 +163,18 @@ pub fn detect_language(path: String, content: Option<String>) -> String {
 
 // Settings
 #[tauri::command]
-pub async fn get_settings(app: AppHandle) -> Result<settings::EditorSettings, String> {
-    settings::get_settings(&app).await.map_err(|e| e.to_string())
+pub async fn get_settings() -> Result<settings::EditorSettings, String> {
+    settings::get_settings().await.map_err(|e| e.to_string())
 }
 
 #[tauri::command]
-pub async fn save_settings(app: AppHandle, new_settings: settings::EditorSettings) -> Result<(), String> {
-    settings::save_settings(&app, &new_settings).await.map_err(|e| e.to_string())
+pub async fn save_settings(new_settings: settings::EditorSettings) -> Result<(), String> {
+    settings::save_settings(&new_settings).await.map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub fn get_config_directory() -> Result<String, String> {
+    settings::get_config_directory().map_err(|e| e.to_string())
 }
 
 // App Info
@@ -293,6 +298,60 @@ pub async fn load_language_file(lang_code: String) -> Result<serde_json::Value, 
     Err(format!("Language file not found: {}", lang_code))
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct LanguageData {
+    pub code: String,
+    pub data: serde_json::Value,
+}
+
+#[tauri::command]
+pub async fn load_languages() -> Result<Vec<LanguageData>, String> {
+    let mut languages = Vec::new();
+    
+    if let Ok(exe_path) = std::env::current_exe() {
+        if let Some(exe_dir) = exe_path.parent() {
+            let lang_dir = exe_dir.join("Language");
+            if lang_dir.exists() {
+                if let Ok(entries) = std::fs::read_dir(&lang_dir) {
+                    for entry in entries.flatten() {
+                        if let Some(name) = entry.file_name().to_str() {
+                            if name.ends_with(".json") {
+                                let lang_code = name.trim_end_matches(".json").to_string();
+                                let lang_file = entry.path();
+                                
+                                match tokio::fs::read_to_string(&lang_file).await {
+                                    Ok(content) => {
+                                        match serde_json::from_str::<serde_json::Value>(&content) {
+                                            Ok(json) => {
+                                                languages.push(LanguageData {
+                                                    code: lang_code,
+                                                    data: json,
+                                                });
+                                            }
+                                            Err(e) => {
+                                                eprintln!("Failed to parse language file {}: {}", name, e);
+                                            }
+                                        }
+                                    }
+                                    Err(e) => {
+                                        eprintln!("Failed to read language file {}: {}", name, e);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    if languages.is_empty() {
+        Err("No language files found in Language directory".to_string())
+    } else {
+        Ok(languages)
+    }
+}
+
 // Font System
 #[tauri::command]
 pub async fn get_available_fonts() -> Result<Vec<fonts::FontInfo>, String> {
@@ -328,4 +387,107 @@ pub async fn read_file_with_encoding(path: String, encoding_name: String) -> Res
 #[tauri::command]
 pub async fn write_file_with_encoding(path: String, content: String, encoding_name: String) -> Result<(), String> {
     encoding::write_file_with_encoding(&path, &content, &encoding_name).await.map_err(|e| e.to_string())
+}
+
+// Terminal Commands
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TerminalOutput {
+    pub stdout: String,
+    pub stderr: String,
+    pub exit_code: Option<i32>,
+}
+
+#[tauri::command]
+pub async fn execute_terminal_command(
+    command: String,
+    cwd: Option<String>,
+    terminal_type: String,
+) -> Result<TerminalOutput, String> {
+    use std::process::{Command, Stdio};
+    
+    #[cfg(windows)]
+    use std::os::windows::process::CommandExt;
+    #[cfg(windows)]
+    const CREATE_NO_WINDOW: u32 = 0x08000000;
+    
+    let (shell, shell_arg) = match terminal_type.as_str() {
+        "cmd" => ("cmd", "/C"),
+        "pwsh" => ("pwsh", "-Command"),
+        "wsl" => ("wsl", "-e"),
+        "gitbash" => {
+            // Try common Git Bash paths
+            let git_bash_paths = [
+                "C:\\Program Files\\Git\\bin\\bash.exe",
+                "C:\\Program Files (x86)\\Git\\bin\\bash.exe",
+            ];
+            let bash_path = git_bash_paths.iter()
+                .find(|p| std::path::Path::new(p).exists())
+                .map(|s| *s)
+                .unwrap_or("bash");
+            (bash_path, "-c")
+        },
+        _ => ("powershell", "-Command"), // default to powershell
+    };
+    
+    let mut cmd = Command::new(shell);
+    cmd.arg(shell_arg)
+        .arg(&command)
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped());
+    
+    if let Some(dir) = &cwd {
+        cmd.current_dir(dir);
+    }
+    
+    #[cfg(windows)]
+    cmd.creation_flags(CREATE_NO_WINDOW);
+    
+    let output = cmd.output().map_err(|e| e.to_string())?;
+    
+    Ok(TerminalOutput {
+        stdout: String::from_utf8_lossy(&output.stdout).to_string(),
+        stderr: String::from_utf8_lossy(&output.stderr).to_string(),
+        exit_code: output.status.code(),
+    })
+}
+
+#[tauri::command]
+pub fn get_available_terminals() -> Vec<String> {
+    let mut terminals = vec!["powershell".to_string()];
+    
+    #[cfg(windows)]
+    {
+        // Check for cmd
+        terminals.push("cmd".to_string());
+        
+        // Check for PowerShell Core (pwsh)
+        if std::process::Command::new("pwsh")
+            .arg("--version")
+            .output()
+            .is_ok()
+        {
+            terminals.push("pwsh".to_string());
+        }
+        
+        // Check for WSL
+        if std::process::Command::new("wsl")
+            .arg("--status")
+            .output()
+            .is_ok()
+        {
+            terminals.push("wsl".to_string());
+        }
+        
+        // Check for Git Bash
+        let git_bash_paths = [
+            "C:\\Program Files\\Git\\bin\\bash.exe",
+            "C:\\Program Files (x86)\\Git\\bin\\bash.exe",
+        ];
+        if git_bash_paths.iter().any(|p| std::path::Path::new(p).exists()) {
+            terminals.push("gitbash".to_string());
+        }
+    }
+    
+    terminals
 }

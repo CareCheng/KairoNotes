@@ -13,6 +13,8 @@ export default defineConfig({
         target: ['es2021', 'chrome100', 'safari13'],
         minify: !process.env.TAURI_DEBUG ? 'esbuild' : false,
         sourcemap: !!process.env.TAURI_DEBUG,
+        // 输出目录由构建脚本通过 --outDir 参数指定
         outDir: 'dist',
+        emptyOutDir: true,
     },
 });

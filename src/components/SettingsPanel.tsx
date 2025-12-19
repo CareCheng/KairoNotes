@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { invoke } from '@tauri-apps/api/core';
 import { useStore } from '../store';
-import { X, Monitor, Type, FileText, Palette, Keyboard, Info } from 'lucide-react';
+import { X, Type, FileText, Palette, Keyboard } from 'lucide-react';
 import '../styles/SettingsPanel.css';
 
 interface FontInfo {
@@ -21,7 +21,7 @@ interface EncodingInfo {
   category: string;
 }
 
-type SettingsTab = 'appearance' | 'editor' | 'files' | 'keyboard' | 'about';
+type SettingsTab = 'appearance' | 'editor' | 'files' | 'keyboard';
 
 export function SettingsPanel() {
   const { t, i18n } = useTranslation();
@@ -82,7 +82,6 @@ export function SettingsPanel() {
     { id: 'editor' as SettingsTab, label: t('settings.editor'), icon: Type },
     { id: 'files' as SettingsTab, label: t('settings.files'), icon: FileText },
     { id: 'keyboard' as SettingsTab, label: t('settings.keyboard'), icon: Keyboard },
-    { id: 'about' as SettingsTab, label: t('settings.about'), icon: Info },
   ];
 
   // 按类别分组编码
@@ -263,15 +262,14 @@ export function SettingsPanel() {
                       </select>
                     </div>
                     
-                    <div className="setting-item checkbox">
-                      <label>
-                        <input
-                          type="checkbox"
-                          checked={settings.insertSpaces}
-                          onChange={(e) => updateSettings({ insertSpaces: e.target.checked })}
-                        />
-                        {t('settings.insertSpaces')}
-                      </label>
+                    <div className="setting-item toggle">
+                      <label>{t('settings.insertSpaces')}</label>
+                      <div 
+                        className={`toggle-switch ${settings.insertSpaces ? 'active' : ''}`}
+                        onClick={() => updateSettings({ insertSpaces: !settings.insertSpaces })}
+                      >
+                        <div className="toggle-slider" />
+                      </div>
                     </div>
                     
                     <div className="setting-item">
@@ -287,16 +285,28 @@ export function SettingsPanel() {
                       </select>
                     </div>
                     
-                    <div className="setting-item checkbox">
-                      <label>
-                        <input
-                          type="checkbox"
-                          checked={settings.minimapEnabled}
-                          onChange={(e) => updateSettings({ minimapEnabled: e.target.checked })}
-                        />
-                        {t('settings.minimap')}
-                      </label>
+                    <div className="setting-item toggle">
+                      <label>{t('settings.minimap')}</label>
+                      <div 
+                        className={`toggle-switch ${settings.minimapEnabled ? 'active' : ''}`}
+                        onClick={() => updateSettings({ minimapEnabled: !settings.minimapEnabled })}
+                      >
+                        <div className="toggle-slider" />
+                      </div>
                     </div>
+                    
+                    <h3 style={{ marginTop: '24px' }}>{t('settings.extremeMode')}</h3>
+                    
+                    <div className="setting-item toggle">
+                      <label>{t('settings.enableExtremeMode')}</label>
+                      <div 
+                        className={`toggle-switch ${settings.extremeMode ? 'active' : ''}`}
+                        onClick={() => updateSettings({ extremeMode: !settings.extremeMode })}
+                      >
+                        <div className="toggle-slider" />
+                      </div>
+                    </div>
+                    <p className="setting-description">{t('settings.extremeModeDesc')}</p>
                     
                     <div className="setting-item">
                       <label>{t('settings.lineNumbers')}</label>
@@ -331,15 +341,14 @@ export function SettingsPanel() {
                   <div className="settings-section">
                     <h3>{t('settings.files')}</h3>
                     
-                    <div className="setting-item checkbox">
-                      <label>
-                        <input
-                          type="checkbox"
-                          checked={settings.autoSave}
-                          onChange={(e) => updateSettings({ autoSave: e.target.checked })}
-                        />
-                        {t('settings.autoSave')}
-                      </label>
+                    <div className="setting-item toggle">
+                      <label>{t('settings.autoSave')}</label>
+                      <div 
+                        className={`toggle-switch ${settings.autoSave ? 'active' : ''}`}
+                        onClick={() => updateSettings({ autoSave: !settings.autoSave })}
+                      >
+                        <div className="toggle-slider" />
+                      </div>
                     </div>
                     
                     {settings.autoSave && (
@@ -389,27 +398,75 @@ export function SettingsPanel() {
                       </select>
                     </div>
                     
-                    <div className="setting-item checkbox">
-                      <label>
-                        <input
-                          type="checkbox"
-                          checked={settings.trimTrailingWhitespace}
-                          onChange={(e) => updateSettings({ trimTrailingWhitespace: e.target.checked })}
-                        />
-                        {t('settings.trimTrailingWhitespace')}
-                      </label>
+                    <div className="setting-item toggle">
+                      <label>{t('settings.trimTrailingWhitespace')}</label>
+                      <div 
+                        className={`toggle-switch ${settings.trimTrailingWhitespace ? 'active' : ''}`}
+                        onClick={() => updateSettings({ trimTrailingWhitespace: !settings.trimTrailingWhitespace })}
+                      >
+                        <div className="toggle-slider" />
+                      </div>
                     </div>
                     
-                    <div className="setting-item checkbox">
-                      <label>
-                        <input
-                          type="checkbox"
-                          checked={settings.insertFinalNewline}
-                          onChange={(e) => updateSettings({ insertFinalNewline: e.target.checked })}
-                        />
-                        {t('settings.insertFinalNewline')}
-                      </label>
+                    <div className="setting-item toggle">
+                      <label>{t('settings.insertFinalNewline')}</label>
+                      <div 
+                        className={`toggle-switch ${settings.insertFinalNewline ? 'active' : ''}`}
+                        onClick={() => updateSettings({ insertFinalNewline: !settings.insertFinalNewline })}
+                      >
+                        <div className="toggle-slider" />
+                      </div>
                     </div>
+                    
+                    <h3 style={{ marginTop: '24px' }}>{t('settings.systemIntegration')}</h3>
+                    
+                    <div className="setting-item toggle">
+                      <label>{t('settings.registerAsDefaultEditor')}</label>
+                      <div 
+                        className={`toggle-switch ${settings.registerAsDefaultEditor ? 'active' : ''}`}
+                        onClick={() => updateSettings({ registerAsDefaultEditor: !settings.registerAsDefaultEditor })}
+                      >
+                        <div className="toggle-slider" />
+                      </div>
+                    </div>
+                    
+                    <div className="setting-item toggle">
+                      <label>{t('settings.registerAsPathEditor')}</label>
+                      <div 
+                        className={`toggle-switch ${settings.registerAsPathEditor ? 'active' : ''}`}
+                        onClick={() => updateSettings({ registerAsPathEditor: !settings.registerAsPathEditor })}
+                      >
+                        <div className="toggle-slider" />
+                      </div>
+                    </div>
+                    
+                    <div className="setting-item toggle">
+                      <label>{t('settings.addToContextMenu')}</label>
+                      <div 
+                        className={`toggle-switch ${settings.addToContextMenu ? 'active' : ''}`}
+                        onClick={() => updateSettings({ addToContextMenu: !settings.addToContextMenu })}
+                      >
+                        <div className="toggle-slider" />
+                      </div>
+                    </div>
+                    <p className="setting-description">{t('settings.contextMenuDesc')}</p>
+                    
+                    <h3 style={{ marginTop: '24px' }}>{t('settings.terminal')}</h3>
+                    
+                    <div className="setting-item">
+                      <label>{t('settings.terminalType')}</label>
+                      <select
+                        value={settings.terminalType}
+                        onChange={(e) => updateSettings({ terminalType: e.target.value })}
+                      >
+                        <option value="powershell">PowerShell</option>
+                        <option value="cmd">CMD (命令提示符)</option>
+                        <option value="pwsh">PowerShell Core (pwsh)</option>
+                        <option value="wsl">WSL (Windows Subsystem for Linux)</option>
+                        <option value="gitbash">Git Bash</option>
+                      </select>
+                    </div>
+                    <p className="setting-description">{t('settings.terminalTypeDesc')}</p>
                   </div>
                 )}
                 
@@ -453,32 +510,7 @@ export function SettingsPanel() {
                   </div>
                 )}
                 
-                {activeTab === 'about' && (
-                  <div className="settings-section">
-                    <h3>{t('settings.about')}</h3>
-                    <div className="about-content">
-                      <div className="about-logo">
-                        <img src="/kaironotes.svg" alt="KairoNotes" width="64" height="64" />
-                      </div>
-                      <h2>KairoNotes</h2>
-                      <p className="version">Version 1.0.0</p>
-                      <p className="description">
-                        {t('app.description')}
-                      </p>
-                      <div className="about-links">
-                        <a href="https://github.com/kaironotes/kaironotes" target="_blank" rel="noopener noreferrer">
-                          GitHub
-                        </a>
-                        <a href="https://kaironotes.com" target="_blank" rel="noopener noreferrer">
-                          Website
-                        </a>
-                      </div>
-                      <p className="copyright">
-                        © 2024 KairoNotes Team. All rights reserved.
-                      </p>
-                    </div>
-                  </div>
-                )}
+
               </div>
             </div>
           </motion.div>

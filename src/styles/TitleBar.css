@@ -70,3 +70,15 @@
   background: #e81123;
   color: white;
 }
+
+/* Theme Toggle Button */
+.window-btn.theme-toggle-btn {
+  width: 36px;
+  margin-right: 4px;
+  border-radius: 4px;
+}
+
+.window-btn.theme-toggle-btn:hover {
+  background: var(--bg-hover);
+  color: var(--accent-color, #007acc);
+}

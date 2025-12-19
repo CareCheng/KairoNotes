@@ -3,9 +3,10 @@
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
-use tauri::{AppHandle, Manager};
 use tokio::sync::RwLock;
 use std::sync::OnceLock;
+
+use crate::system_integration;
 
 static SETTINGS: OnceLock<RwLock<EditorSettings>> = OnceLock::new();
 static RECENT_FILES: OnceLock<RwLock<Vec<String>>> = OnceLock::new();
@@ -51,6 +52,22 @@ pub struct EditorSettings {
     pub show_status_bar: bool,
     pub show_activity_bar: bool,
     pub show_sidebar: bool,
+    
+    // Advanced
+    pub bracket_pair_colorization: bool,
+    pub auto_closing_brackets: bool,
+    pub auto_closing_quotes: bool,
+    pub format_on_save: bool,
+    pub format_on_paste: bool,
+    pub extreme_mode: bool,
+    
+    // System Integration
+    pub register_as_default_editor: bool,
+    pub register_as_path_editor: bool,
+    pub add_to_context_menu: bool,
+    
+    // Terminal
+    pub terminal_type: String,
 }
 
 impl Default for EditorSettings {
@@ -83,30 +100,38 @@ impl Default for EditorSettings {
             show_status_bar: true,
             show_activity_bar: true,
             show_sidebar: true,
+            bracket_pair_colorization: true,
+            auto_closing_brackets: true,
+            auto_closing_quotes: true,
+            format_on_save: false,
+            format_on_paste: false,
+            extreme_mode: false,
+            register_as_default_editor: false,
+            register_as_path_editor: false,
+            add_to_context_menu: false,
+            terminal_type: "powershell".to_string(),
         }
     }
 }
 
-fn get_settings_path(app: &AppHandle) -> Result<PathBuf> {
-    let app_dir = app.path().app_config_dir()?;
-    Ok(app_dir.join("settings.json"))
+fn get_settings_path() -> Result<PathBuf> {
+    let config_dir = system_integration::get_config_dir()?;
+    Ok(config_dir.join("settings.json"))
 }
 
-fn get_recent_files_path(app: &AppHandle) -> Result<PathBuf> {
-    let app_dir = app.path().app_config_dir()?;
-    Ok(app_dir.join("recent_files.json"))
+fn get_recent_files_path() -> Result<PathBuf> {
+    let config_dir = system_integration::get_config_dir()?;
+    Ok(config_dir.join("recent_files.json"))
 }
 
-pub async fn init_settings(app: &AppHandle) -> Result<()> {
-    let settings_path = get_settings_path(app)?;
-    
+pub async fn init_settings() -> Result<()> {
     // Ensure config directory exists
-    if let Some(parent) = settings_path.parent() {
-        tokio::fs::create_dir_all(parent).await?;
-    }
+    system_integration::ensure_config_dir().await?;
+    
+    let settings_path = get_settings_path()?;
     
     // Load or create settings
-    let settings = if settings_path.exists() {
+    let settings: EditorSettings = if settings_path.exists() {
         let content = tokio::fs::read_to_string(&settings_path).await?;
         serde_json::from_str(&content).unwrap_or_default()
     } else {
@@ -116,10 +141,13 @@ pub async fn init_settings(app: &AppHandle) -> Result<()> {
         default_settings
     };
     
+    // 不在启动时检查系统集成状态，避免控制台窗口闪烁
+    // 系统集成状态会在用户打开设置面板时按需检查
+    
     let _ = SETTINGS.set(RwLock::new(settings));
     
     // Load recent files
-    let recent_path = get_recent_files_path(app)?;
+    let recent_path = get_recent_files_path()?;
     let recent_files = if recent_path.exists() {
         let content = tokio::fs::read_to_string(&recent_path).await?;
         serde_json::from_str(&content).unwrap_or_default()
@@ -132,17 +160,49 @@ pub async fn init_settings(app: &AppHandle) -> Result<()> {
     Ok(())
 }
 
-pub async fn get_settings(app: &AppHandle) -> Result<EditorSettings> {
+pub async fn get_settings() -> Result<EditorSettings> {
     if let Some(settings) = SETTINGS.get() {
         Ok(settings.read().await.clone())
     } else {
-        init_settings(app).await?;
+        init_settings().await?;
         Ok(SETTINGS.get().unwrap().read().await.clone())
     }
 }
 
-pub async fn save_settings(app: &AppHandle, new_settings: &EditorSettings) -> Result<()> {
-    let settings_path = get_settings_path(app)?;
+pub async fn save_settings(new_settings: &EditorSettings) -> Result<()> {
+    // Handle system integration changes
+    if let Some(settings) = SETTINGS.get() {
+        let old_settings = settings.read().await.clone();
+        
+        // Handle default editor registration
+        if new_settings.register_as_default_editor != old_settings.register_as_default_editor {
+            if new_settings.register_as_default_editor {
+                system_integration::register_as_default_editor()?;
+            } else {
+                system_integration::unregister_default_editor()?;
+            }
+        }
+        
+        // Handle PATH registration
+        if new_settings.register_as_path_editor != old_settings.register_as_path_editor {
+            if new_settings.register_as_path_editor {
+                system_integration::add_to_path()?;
+            } else {
+                system_integration::remove_from_path()?;
+            }
+        }
+        
+        // Handle context menu registration
+        if new_settings.add_to_context_menu != old_settings.add_to_context_menu {
+            if new_settings.add_to_context_menu {
+                system_integration::add_to_context_menu()?;
+            } else {
+                system_integration::remove_from_context_menu()?;
+            }
+        }
+    }
+    
+    let settings_path = get_settings_path()?;
     let content = serde_json::to_string_pretty(new_settings)?;
     tokio::fs::write(&settings_path, content).await?;
     
@@ -153,18 +213,18 @@ pub async fn save_settings(app: &AppHandle, new_settings: &EditorSettings) -> Re
     Ok(())
 }
 
-pub async fn get_recent_files(app: &AppHandle) -> Result<Vec<String>> {
+pub async fn get_recent_files() -> Result<Vec<String>> {
     if let Some(recent) = RECENT_FILES.get() {
         Ok(recent.read().await.clone())
     } else {
-        init_settings(app).await?;
+        init_settings().await?;
         Ok(RECENT_FILES.get().unwrap().read().await.clone())
     }
 }
 
-pub async fn add_recent_file(app: &AppHandle, path: &str) -> Result<()> {
+pub async fn add_recent_file(path: &str) -> Result<()> {
     if RECENT_FILES.get().is_none() {
-        init_settings(app).await?;
+        init_settings().await?;
     }
     
     if let Some(recent) = RECENT_FILES.get() {
@@ -180,7 +240,7 @@ pub async fn add_recent_file(app: &AppHandle, path: &str) -> Result<()> {
         files.truncate(20);
         
         // Save to file
-        let recent_path = get_recent_files_path(app)?;
+        let recent_path = get_recent_files_path()?;
         let content = serde_json::to_string_pretty(&*files)?;
         tokio::fs::write(&recent_path, content).await?;
     }
@@ -188,13 +248,19 @@ pub async fn add_recent_file(app: &AppHandle, path: &str) -> Result<()> {
     Ok(())
 }
 
-pub async fn clear_recent_files(app: &AppHandle) -> Result<()> {
+pub async fn clear_recent_files() -> Result<()> {
     if let Some(recent) = RECENT_FILES.get() {
         recent.write().await.clear();
         
-        let recent_path = get_recent_files_path(app)?;
+        let recent_path = get_recent_files_path()?;
         tokio::fs::write(&recent_path, "[]").await?;
     }
     
     Ok(())
+}
+
+/// 获取配置文件目录路径
+pub fn get_config_directory() -> Result<String> {
+    let config_dir = system_integration::get_config_dir()?;
+    Ok(config_dir.to_string_lossy().to_string())
 }

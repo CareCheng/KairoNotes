@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useStore } from '../store';
 import { X, Circle } from 'lucide-react';
+import { FileIcon } from './FileIcon';
 import '../styles/EditorTabs.css';
 
 export function EditorTabs() {
@@ -35,6 +36,7 @@ export function EditorTabs() {
             onClick={() => setActiveTab(tab.id)}
             onMouseDown={(e) => handleMiddleClick(e, tab.id)}
           >
+            <FileIcon name={tab.name} size={14} />
             <span className="tab-name">{tab.name}</span>
             <button 
               className="tab-close"
@@ -48,7 +50,7 @@ export function EditorTabs() {
             </button>
           </div>
         ))}
-        <button className="new-tab-btn" onClick={createTab} title={t('file.new')}>
+        <button className="new-tab-btn" onClick={() => createTab()} title={t('file.new')}>
           +
         </button>
       </div>

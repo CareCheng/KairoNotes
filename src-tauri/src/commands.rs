@@ -1,11 +1,12 @@
 // Tauri Commands - API endpoints for frontend
 
-use crate::{editor, file_ops, plugin, settings, syntax};
+use crate::{editor, encoding, file_ops, fonts, plugin, settings, syntax};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use tauri::AppHandle;
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct FileInfo {
     pub path: String,
     pub name: String,
@@ -29,6 +30,7 @@ pub struct SearchResult {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct DirectoryEntry {
     pub name: String,
     pub path: String,
@@ -174,9 +176,9 @@ pub async fn save_settings(app: AppHandle, new_settings: settings::EditorSetting
 #[tauri::command]
 pub fn get_app_info() -> AppInfo {
     AppInfo {
-        name: "RustNote".to_string(),
+        name: "KairoNotes".to_string(),
         version: env!("CARGO_PKG_VERSION").to_string(),
-        authors: "RustNote Team".to_string(),
+        authors: "KairoNotes Team".to_string(),
         description: "A modern cross-platform document editor".to_string(),
     }
 }
@@ -289,4 +291,41 @@ pub async fn load_language_file(lang_code: String) -> Result<serde_json::Value, 
         }
     }
     Err(format!("Language file not found: {}", lang_code))
+}
+
+// Font System
+#[tauri::command]
+pub async fn get_available_fonts() -> Result<Vec<fonts::FontInfo>, String> {
+    fonts::get_available_fonts().await.map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub async fn get_monospace_fonts() -> Result<Vec<fonts::FontInfo>, String> {
+    fonts::get_monospace_fonts().await.map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub async fn get_fonts_directory() -> Result<String, String> {
+    fonts::get_fonts_directory().await.map_err(|e| e.to_string())
+}
+
+// Encoding System
+#[tauri::command]
+pub fn get_supported_encodings() -> Vec<encoding::EncodingInfo> {
+    encoding::get_supported_encodings()
+}
+
+#[tauri::command]
+pub async fn detect_file_encoding(path: String) -> Result<String, String> {
+    encoding::detect_file_encoding(&path).await.map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub async fn read_file_with_encoding(path: String, encoding_name: String) -> Result<String, String> {
+    encoding::read_file_with_encoding(&path, &encoding_name).await.map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub async fn write_file_with_encoding(path: String, content: String, encoding_name: String) -> Result<(), String> {
+    encoding::write_file_with_encoding(&path, &content, &encoding_name).await.map_err(|e| e.to_string())
 }

@@ -1,15 +1,17 @@
-// RustNote Editor - Main Library
+// KairoNotes - Main Library
 // Cross-platform document editor built with Tauri
 
 mod commands;
 mod editor;
+mod encoding;
 mod file_ops;
+mod fonts;
 mod plugin;
 mod settings;
 mod syntax;
 
-#[cfg(debug_assertions)]
 use tauri::Manager;
+use tauri_plugin_window_state::StateFlags;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -19,7 +21,12 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_clipboard_manager::init())
-        .plugin(tauri_plugin_window_state::Builder::default().build())
+        // 配置 window-state 插件，只保存位置和大小，不保存 decorations
+        .plugin(
+            tauri_plugin_window_state::Builder::default()
+                .with_state_flags(StateFlags::POSITION | StateFlags::SIZE | StateFlags::MAXIMIZED)
+                .build()
+        )
         .plugin(tauri_plugin_process::init())
         .invoke_handler(tauri::generate_handler![
             commands::read_file,
@@ -56,16 +63,27 @@ pub fn run() {
             commands::get_language_directory,
             commands::list_available_languages,
             commands::load_language_file,
+            // Font commands
+            commands::get_available_fonts,
+            commands::get_monospace_fonts,
+            commands::get_fonts_directory,
+            // Encoding commands
+            commands::get_supported_encodings,
+            commands::detect_file_encoding,
+            commands::read_file_with_encoding,
+            commands::write_file_with_encoding,
         ])
-        .setup(|_app| {
-            #[cfg(debug_assertions)]
-            {
-                let window = _app.get_webview_window("main").unwrap();
+        .setup(|app| {
+            // 确保窗口无边框
+            if let Some(window) = app.get_webview_window("main") {
+                let _ = window.set_decorations(false);
+                
+                #[cfg(debug_assertions)]
                 window.open_devtools();
             }
             
             // Initialize settings
-            let app_handle = _app.handle().clone();
+            let app_handle = app.handle().clone();
             tauri::async_runtime::spawn(async move {
                 if let Err(e) = settings::init_settings(&app_handle).await {
                     log::error!("Failed to initialize settings: {}", e);

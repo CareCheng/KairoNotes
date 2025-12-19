@@ -2022,6 +2022,36 @@ dependencies = [
 ]
 
 [[package]]
+name = "kaironotes"
+version = "1.0.0"
+dependencies = [
+ "anyhow",
+ "chrono",
+ "dirs",
+ "encoding_rs",
+ "log",
+ "notify",
+ "regex",
+ "serde",
+ "serde_json",
+ "syntect",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-clipboard-manager",
+ "tauri-plugin-dialog",
+ "tauri-plugin-fs",
+ "tauri-plugin-log",
+ "tauri-plugin-process",
+ "tauri-plugin-shell",
+ "tauri-plugin-window-state",
+ "thiserror 2.0.17",
+ "tokio",
+ "tree-sitter",
+ "uuid",
+ "walkdir",
+]
+
+[[package]]
 name = "keyboard-types"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3462,36 +3492,6 @@ dependencies = [
  "libc",
  "linux-raw-sys",
  "windows-sys 0.61.2",
-]
-
-[[package]]
-name = "rustnote"
-version = "1.0.0"
-dependencies = [
- "anyhow",
- "chrono",
- "dirs",
- "encoding_rs",
- "log",
- "notify",
- "regex",
- "serde",
- "serde_json",
- "syntect",
- "tauri",
- "tauri-build",
- "tauri-plugin-clipboard-manager",
- "tauri-plugin-dialog",
- "tauri-plugin-fs",
- "tauri-plugin-log",
- "tauri-plugin-process",
- "tauri-plugin-shell",
- "tauri-plugin-window-state",
- "thiserror 2.0.17",
- "tokio",
- "tree-sitter",
- "uuid",
- "walkdir",
 ]
 
 [[package]]

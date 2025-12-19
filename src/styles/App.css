@@ -12,10 +12,34 @@
   overflow: hidden;
 }
 
-.editor-area {
+.main-area {
   display: flex;
   flex-direction: column;
   flex: 1;
   min-width: 0;
+  overflow: hidden;
+}
+
+.editor-area {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
   background: var(--bg-primary);
+}
+
+.editor-container-wrapper {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.editor-container-wrapper > .editor-container {
+  flex: 1;
+  min-width: 0;
+}
+
+.editor-container-wrapper > .markdown-preview {
+  flex: 0 0 auto;
 }

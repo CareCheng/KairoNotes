@@ -22,7 +22,7 @@
 .tab {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 6px;
   height: 100%;
   padding: 0 var(--spacing-md);
   background: var(--bg-tertiary);
@@ -32,6 +32,10 @@
   white-space: nowrap;
   min-width: 100px;
   max-width: 200px;
+}
+
+.tab .file-icon {
+  flex-shrink: 0;
 }
 
 .tab:hover {

@@ -1,0 +1,50 @@
+/* FileIcon Styles - 文件图标样式 */
+
+.file-icon {
+  flex-shrink: 0;
+  margin-right: 6px;
+}
+
+.file-icon.folder {
+  color: #dcb67a;
+}
+
+.file-icon.folder.git {
+  color: #f14e32;
+}
+
+/* 编程语言图标颜色 */
+.icon-javascript { color: #f7df1e; }
+.icon-typescript { color: #3178c6; }
+.icon-python { color: #3776ab; }
+.icon-rust { color: #dea584; }
+.icon-go { color: #00add8; }
+.icon-java { color: #ed8b00; }
+.icon-c { color: #a8b9cc; }
+.icon-cpp { color: #00599c; }
+.icon-csharp { color: #239120; }
+.icon-ruby { color: #cc342d; }
+.icon-php { color: #777bb4; }
+.icon-swift { color: #fa7343; }
+.icon-html { color: #e34f26; }
+.icon-css { color: #1572b6; }
+.icon-scss { color: #c6538c; }
+.icon-json { color: #cbcb41; }
+.icon-markdown { color: #519aba; }
+.icon-yaml { color: #cb171e; }
+.icon-xml { color: #e37933; }
+.icon-sql { color: #e38c00; }
+.icon-shell { color: #89e051; }
+.icon-vue { color: #42b883; }
+.icon-svelte { color: #ff3e00; }
+.icon-folder { color: #dcb67a; }
+.icon-default { color: var(--text-secondary); }
+
+/* 深色主题下的调整 */
+[data-theme="dark"] .file-icon {
+  opacity: 0.9;
+}
+
+[data-theme="light"] .file-icon {
+  opacity: 0.85;
+}

@@ -1,15 +1,34 @@
+/* TitleBar Styles - 无边框窗口标题栏样式 */
+
 .title-bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  height: 36px;
+  height: 32px;
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border-color);
-  -webkit-app-region: drag;
   user-select: none;
 }
 
-.title-bar-drag-region {
+.title-bar-left {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.app-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 100%;
+}
+
+.app-icon img {
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.title-bar-center {
   flex: 1;
   display: flex;
   align-items: center;
@@ -20,38 +39,34 @@
 .app-title {
   font-size: 12px;
   color: var(--text-secondary);
+  pointer-events: none;
 }
 
-.title-bar-menu {
+.title-bar-right {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  padding: 0 var(--spacing-sm);
-  -webkit-app-region: no-drag;
+  height: 100%;
 }
 
-.menu-group {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
-
-.menu-btn {
+.window-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-sm);
+  width: 46px;
+  height: 100%;
   color: var(--text-secondary);
   transition: all var(--transition-fast);
+  background: transparent;
+  border: none;
+  cursor: pointer;
 }
 
-.menu-btn:hover {
+.window-btn:hover {
   background: var(--bg-hover);
   color: var(--text-primary);
 }
 
-.menu-btn:active {
-  background: var(--bg-active);
+.window-btn.close-btn:hover {
+  background: #e81123;
+  color: white;
 }

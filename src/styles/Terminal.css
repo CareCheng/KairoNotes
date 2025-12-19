@@ -1,0 +1,172 @@
+/* Terminal Styles */
+
+.terminal-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border-color);
+  position: relative;
+}
+
+.terminal-resize-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  cursor: ns-resize;
+  z-index: 10;
+}
+
+.terminal-resize-handle:hover {
+  background: var(--accent-color);
+}
+
+.terminal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  padding: 0 var(--spacing-sm);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.terminal-tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  overflow-x: auto;
+}
+
+.terminal-tab {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 4px 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.terminal-tab:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.terminal-tab.active {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.terminal-tab-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.terminal-tab:hover .terminal-tab-close {
+  opacity: 1;
+}
+
+.terminal-tab-close:hover {
+  background: var(--bg-hover);
+}
+
+.terminal-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+}
+
+.terminal-add:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.terminal-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.terminal-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+}
+
+.terminal-actions button:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.terminal-body {
+  flex: 1;
+  padding: var(--spacing-sm);
+  overflow-y: auto;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.4;
+  background: #0d1117;
+  color: #c9d1d9;
+}
+
+.terminal-line {
+  margin-bottom: 2px;
+}
+
+.terminal-line pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.terminal-line.input {
+  color: #58a6ff;
+}
+
+.terminal-line.output {
+  color: #c9d1d9;
+}
+
+.terminal-line.error {
+  color: #f85149;
+}
+
+.terminal-input-line {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.terminal-prompt {
+  color: #7ee787;
+  font-weight: bold;
+}
+
+.terminal-input-line input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #c9d1d9;
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
+}

@@ -1,17 +1,17 @@
 {
-  "productName": "RustNote",
+  "productName": "KairoNotes",
   "version": "1.0.0",
-  "identifier": "com.rustnote.editor",
+  "identifier": "com.kaironotes.editor",
   "build": {
-    "frontendDist": "../dist",
+    "frontendDist": "gui",
     "devUrl": "http://localhost:5173",
     "beforeDevCommand": "npm run dev",
-    "beforeBuildCommand": "npm run build"
+    "beforeBuildCommand": ""
   },
   "app": {
     "windows": [
       {
-        "title": "RustNote Editor",
+        "title": "KairoNotes",
         "width": 1400,
         "height": 900,
         "minWidth": 800,
@@ -19,7 +19,7 @@
         "resizable": true,
         "fullscreen": false,
         "center": true,
-        "decorations": true,
+        "decorations": false,
         "transparent": false,
         "visible": true
       }
@@ -45,7 +45,7 @@
     "externalBin": [],
     "category": "DeveloperTool",
     "shortDescription": "Modern Document Editor",
-    "longDescription": "RustNote is a modern, cross-platform document editor with syntax highlighting, multi-language support, and plugin extensibility.",
+    "longDescription": "KairoNotes is a modern, cross-platform document editor with syntax highlighting, multi-language support, and plugin extensibility.",
     "windows": {
       "certificateThumbprint": null,
       "digestAlgorithm": "sha256",

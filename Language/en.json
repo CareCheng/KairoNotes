@@ -1,18 +1,48 @@
 {
   "app": {
-    "name": "RustNote Editor",
-    "description": "Modern Cross-Platform Document Editor"
+    "name": "KairoNotes",
+    "description": "A modern cross-platform document editor with syntax highlighting, multi-language support, and plugin extensibility"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Info",
+    "yes": "Yes",
+    "no": "No",
+    "none": "None"
+  },
+  "window": {
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore": "Restore",
+    "close": "Close"
+  },
+  "menu": {
+    "file": "File",
+    "edit": "Edit",
+    "view": "View",
+    "go": "Go",
+    "tools": "Tools",
+    "help": "Help"
   },
   "file": {
     "new": "New File",
+    "newWindow": "New Window",
     "open": "Open File",
     "openFolder": "Open Folder",
+    "openRecent": "Open Recent",
     "save": "Save",
     "saveAs": "Save As",
+    "saveAll": "Save All",
     "close": "Close",
+    "closeFolder": "Close Folder",
     "closeAll": "Close All",
+    "closeSaved": "Close Saved",
     "recentFiles": "Recent Files",
     "clearRecent": "Clear Recent",
+    "preferences": "Preferences",
     "exit": "Exit"
   },
   "edit": {
@@ -24,36 +54,171 @@
     "selectAll": "Select All",
     "find": "Find",
     "replace": "Replace",
-    "findInFiles": "Find in Files"
+    "findInFiles": "Find in Files",
+    "selection": "Selection",
+    "expandSelection": "Expand Selection",
+    "shrinkSelection": "Shrink Selection",
+    "copyLineUp": "Copy Line Up",
+    "copyLineDown": "Copy Line Down",
+    "moveLineUp": "Move Line Up",
+    "moveLineDown": "Move Line Down",
+    "format": "Format",
+    "formatDocument": "Format Document",
+    "formatSelection": "Format Selection",
+    "lineOperations": "Line Operations",
+    "deleteLine": "Delete Line",
+    "duplicateLine": "Duplicate Line",
+    "sortLinesAsc": "Sort Lines Ascending",
+    "sortLinesDesc": "Sort Lines Descending",
+    "removeDuplicateLines": "Remove Duplicate Lines"
+  },
+  "selection": {
+    "selectAll": "Select All",
+    "expandSelection": "Expand Selection",
+    "shrinkSelection": "Shrink Selection",
+    "copyLineUp": "Copy Line Up",
+    "copyLineDown": "Copy Line Down",
+    "moveLineUp": "Move Line Up",
+    "moveLineDown": "Move Line Down",
+    "addCursorAbove": "Add Cursor Above",
+    "addCursorBelow": "Add Cursor Below",
+    "addCursorsToLineEnds": "Add Cursors to Line Ends"
   },
   "view": {
     "commandPalette": "Command Palette",
+    "appearance": "Appearance",
+    "editorLayout": "Editor Layout",
     "explorer": "Explorer",
     "search": "Search",
     "extensions": "Extensions",
     "terminal": "Terminal",
+    "markdownPreview": "Markdown Preview",
+    "diffView": "Diff View",
     "problems": "Problems",
     "output": "Output",
     "toggleSidebar": "Toggle Sidebar",
     "toggleStatusBar": "Toggle Status Bar",
+    "statusBar": "Status Bar",
+    "fullscreen": "Fullscreen",
     "zoomIn": "Zoom In",
     "zoomOut": "Zoom Out",
-    "resetZoom": "Reset Zoom"
+    "resetZoom": "Reset Zoom",
+    "wordWrap": "Word Wrap",
+    "minimap": "Minimap",
+    "breadcrumbs": "Breadcrumbs",
+    "splitUp": "Split Up",
+    "splitDown": "Split Down",
+    "splitLeft": "Split Left",
+    "splitRight": "Split Right",
+    "singleColumn": "Single Column",
+    "twoColumns": "Two Columns",
+    "threeColumns": "Three Columns"
+  },
+  "go": {
+    "back": "Back",
+    "forward": "Forward",
+    "goToFile": "Go to File",
+    "goToSymbol": "Go to Symbol",
+    "goToLine": "Go to Line",
+    "goToDefinition": "Go to Definition",
+    "goToDeclaration": "Go to Declaration",
+    "goToReferences": "Go to References",
+    "goToBracket": "Go to Bracket",
+    "goToMatchingBracket": "Go to Matching Bracket",
+    "selectToBracket": "Select to Bracket"
+  },
+  "tools": {
+    "title": "Tools",
+    "codeTools": "Code Tools",
+    "textTools": "Text Tools",
+    "encoding": "Encoding",
+    "formatJson": "Format JSON",
+    "minifyJson": "Minify JSON",
+    "sortLines": "Sort Lines",
+    "removeDuplicates": "Remove Duplicates",
+    "toUpperCase": "To Upper Case",
+    "toLowerCase": "To Lower Case",
+    "toTitleCase": "To Title Case",
+    "trimWhitespace": "Trim Whitespace",
+    "removeEmptyLines": "Remove Empty Lines",
+    "base64Encode": "Base64 Encode",
+    "base64Decode": "Base64 Decode",
+    "urlEncode": "URL Encode",
+    "urlDecode": "URL Decode",
+    "htmlEncode": "HTML Encode",
+    "htmlDecode": "HTML Decode",
+    "colorPicker": "Color Picker",
+    "characterCount": "Character Count",
+    "compareFiles": "Compare Files",
+    "color": "Color",
+    "formatter": "Formatter",
+    "encoder": "Encoder",
+    "generator": "Generator",
+    "format": "Format",
+    "minify": "Minify",
+    "encode": "Encode",
+    "decode": "Decode",
+    "copy": "Copy",
+    "copied": "Copied",
+    "insertToEditor": "Insert to Editor",
+    "inputPlaceholder": "Enter text here or leave empty to use current file content...",
+    "hashNote": "Hash functions require backend support"
+  },
+  "help": {
+    "welcome": "Welcome",
+    "documentation": "Documentation",
+    "keyboardShortcuts": "Keyboard Shortcuts",
+    "reportIssue": "Report Issue",
+    "checkUpdates": "Check for Updates",
+    "about": "About"
   },
   "settings": {
     "title": "Settings",
     "editor": "Editor",
     "appearance": "Appearance",
+    "files": "Files",
+    "keyboard": "Keyboard Shortcuts",
+    "about": "About",
     "language": "Language",
     "theme": "Theme",
+    "uiScale": "UI Scale",
     "fontSize": "Font Size",
     "fontFamily": "Font Family",
+    "lineHeight": "Line Height",
     "tabSize": "Tab Size",
+    "insertSpaces": "Insert Spaces",
     "wordWrap": "Word Wrap",
+    "wordWrapOff": "Off",
+    "wordWrapOn": "On",
+    "wordWrapColumn": "Word Wrap Column",
+    "wordWrapBounded": "Bounded",
     "lineNumbers": "Line Numbers",
-    "minimap": "Minimap",
+    "lineNumbersOn": "On",
+    "lineNumbersOff": "Off",
+    "lineNumbersRelative": "Relative",
+    "minimap": "Show Minimap",
+    "cursorStyle": "Cursor Style",
+    "cursorLine": "Line",
+    "cursorBlock": "Block",
+    "cursorUnderline": "Underline",
     "autoSave": "Auto Save",
-    "encoding": "Encoding"
+    "autoSaveDelay": "Auto Save Delay",
+    "encoding": "Default Encoding",
+    "eol": "End of Line",
+    "trimTrailingWhitespace": "Trim Trailing Whitespace",
+    "insertFinalNewline": "Insert Final Newline",
+    "colorTheme": "Color Theme",
+    "keyboardShortcuts": "Keyboard Shortcuts"
+  },
+  "language": {
+    "zhCN": "简体中文",
+    "zhTW": "繁體中文",
+    "en": "English",
+    "ru": "Русский"
+  },
+  "theme": {
+    "dark": "Dark",
+    "light": "Light"
   },
   "search": {
     "placeholder": "Search",
@@ -67,17 +232,24 @@
   },
   "statusBar": {
     "line": "Line",
-    "column": "Column",
+    "column": "Col",
+    "lines": "lines",
+    "words": "words",
+    "chars": "chars",
     "encoding": "Encoding",
     "language": "Language",
-    "eol": "EOL"
+    "eol": "EOL",
+    "unsaved": "unsaved",
+    "allSaved": "All saved"
   },
   "sidebar": {
     "explorer": "Explorer",
     "search": "Search",
+    "git": "Source Control",
     "extensions": "Extensions",
     "noFolderOpened": "No folder opened",
-    "openFolder": "Open Folder"
+    "openFolder": "Open Folder",
+    "refresh": "Refresh"
   },
   "tabs": {
     "close": "Close",
@@ -86,11 +258,27 @@
     "closeSaved": "Close Saved"
   },
   "dialog": {
+    "ok": "OK",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
     "save": "Save",
     "dontSave": "Don't Save",
-    "cancel": "Cancel",
     "saveChanges": "Save changes?",
     "unsavedChanges": "File \"{name}\" has unsaved changes"
+  },
+  "terminal": {
+    "title": "Terminal",
+    "newTerminal": "New Terminal",
+    "clear": "Clear"
+  },
+  "git": {
+    "title": "Source Control",
+    "changes": "Changes",
+    "staged": "Staged",
+    "commit": "Commit",
+    "push": "Push",
+    "pull": "Pull",
+    "branch": "Branch"
   },
   "plugins": {
     "title": "Plugins",
@@ -108,5 +296,10 @@
     "readError": "Failed to read file",
     "writeError": "Failed to write file",
     "unknownError": "Unknown error"
+  },
+  "font": {
+    "monospace": "Monospace",
+    "system": "System",
+    "custom": "Custom"
   }
 }

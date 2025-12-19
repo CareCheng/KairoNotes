@@ -2,32 +2,62 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 22px;
+  height: 24px;
   padding: 0 var(--spacing-sm);
   background: var(--accent-color);
   color: white;
   font-size: 12px;
+  user-select: none;
 }
 
 .status-left,
 .status-right {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: 2px;
 }
 
 .status-item {
   padding: 0 var(--spacing-sm);
-  height: 22px;
+  height: 24px;
   display: flex;
   align-items: center;
+  gap: var(--spacing-xs);
+  white-space: nowrap;
 }
 
 .status-item.clickable {
   cursor: pointer;
   transition: background var(--transition-fast);
+  border-radius: 0;
 }
 
 .status-item.clickable:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.status-item.warning {
+  color: #ffd93d;
+}
+
+.status-item.success {
+  opacity: 0.8;
+}
+
+.git-status {
+  gap: var(--spacing-xs);
+}
+
+.git-changes {
+  display: flex;
+  gap: 4px;
+  margin-left: 4px;
+}
+
+.git-changes .staged {
+  color: #7ee787;
+}
+
+.git-changes .modified {
+  color: #ffd93d;
 }

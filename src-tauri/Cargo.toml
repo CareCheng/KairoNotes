@@ -1,15 +1,15 @@
 [package]
-name = "rustnote"
+name = "kaironotes"
 version = "1.0.0"
 description = "A modern cross-platform document editor built with Tauri"
-authors = ["RustNote Team"]
+authors = ["KairoNotes Team"]
 license = "MIT"
-repository = "https://github.com/rustnote/rustnote-editor"
+repository = "https://github.com/kaironotes/kaironotes"
 edition = "2021"
 rust-version = "1.77.2"
 
 [lib]
-name = "rustnote_lib"
+name = "kaironotes_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]

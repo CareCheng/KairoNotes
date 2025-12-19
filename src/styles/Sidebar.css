@@ -1,3 +1,5 @@
+/* Sidebar Styles */
+
 .sidebar {
   display: flex;
   background: var(--bg-secondary);
@@ -9,6 +11,7 @@
   display: flex;
   flex-direction: column;
   width: 48px;
+  padding: var(--spacing-xs);
   background: var(--bg-tertiary);
   border-right: 1px solid var(--border-color);
 }
@@ -17,29 +20,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 2px;
   color: var(--text-muted);
+  border-radius: var(--radius-sm);
   transition: all var(--transition-fast);
-  position: relative;
 }
 
 .sidebar-tab:hover {
   color: var(--text-primary);
+  background: var(--bg-hover);
 }
 
 .sidebar-tab.active {
   color: var(--text-primary);
-}
-
-.sidebar-tab.active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: var(--accent-color);
+  background: var(--bg-secondary);
+  border-left: 2px solid var(--accent-color);
+  margin-left: -1px;
 }
 
 .sidebar-content {
@@ -49,7 +47,10 @@
   overflow: hidden;
 }
 
-.explorer {
+.explorer,
+.search-view,
+.git-view,
+.extensions-view {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -63,8 +64,8 @@
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  color: var(--text-secondary);
   letter-spacing: 0.5px;
+  color: var(--text-secondary);
 }
 
 .icon-btn {
@@ -73,58 +74,50 @@
   justify-content: center;
   width: 20px;
   height: 20px;
-  border-radius: var(--radius-sm);
   color: var(--text-muted);
+  border-radius: var(--radius-sm);
   transition: all var(--transition-fast);
 }
 
 .icon-btn:hover {
-  background: var(--bg-hover);
   color: var(--text-primary);
-}
-
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  padding: var(--spacing-lg);
-  color: var(--text-muted);
-}
-
-.open-folder-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md);
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  transition: all var(--transition-fast);
-}
-
-.open-folder-btn:hover {
   background: var(--bg-hover);
-  color: var(--text-primary);
 }
 
 .file-tree {
   flex: 1;
-  overflow: auto;
+  overflow-y: auto;
+  padding-bottom: var(--spacing-md);
+}
+
+.tree-root {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .tree-item {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
-  padding: 4px var(--spacing-sm);
+  gap: 4px;
+  padding: 3px 8px;
+  font-size: 13px;
+  color: var(--text-primary);
   cursor: pointer;
   transition: background var(--transition-fast);
 }
 
 .tree-item:hover {
   background: var(--bg-hover);
+}
+
+.tree-arrow {
+  width: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
 }
 
 .tree-item .icon {
@@ -136,7 +129,7 @@
 }
 
 .tree-item .icon.file {
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
 .tree-item .name {
@@ -144,27 +137,66 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 13px;
 }
 
 .tree-item.hidden-file {
   opacity: 0.5;
 }
 
-.search-view,
-.extensions-view {
+.empty-state {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+  text-align: center;
 }
 
+.empty-state .muted {
+  color: var(--text-muted);
+  opacity: 0.5;
+  margin-bottom: var(--spacing-md);
+}
+
+.empty-state p {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.open-folder-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  color: var(--text-secondary);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.open-folder-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--accent-color);
+  background: var(--bg-hover);
+}
+
+.loading {
+  padding: var(--spacing-md);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* Search View */
 .search-input-container {
-  padding: var(--spacing-sm);
+  padding: 0 var(--spacing-sm) var(--spacing-sm);
 }
 
 .search-input {
   width: 100%;
-  padding: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 13px;
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
@@ -173,17 +205,129 @@
 
 .search-input:focus {
   border-color: var(--accent-color);
+  outline: none;
 }
 
-.muted {
-  color: var(--text-muted);
-  opacity: 0.5;
+.search-results {
+  flex: 1;
+  overflow-y: auto;
 }
 
+.search-result-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 13px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.search-result-item:hover {
+  background: var(--bg-hover);
+}
+
+/* Git View */
+.git-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 var(--spacing-sm);
+}
+
+.git-branch {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm);
+  font-size: 13px;
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.git-section {
+  margin-bottom: var(--spacing-md);
+}
+
+.git-section-header {
+  padding: var(--spacing-xs) 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.git-file {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs);
+  font-size: 12px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.git-file:hover {
+  background: var(--bg-hover);
+  border-radius: var(--radius-sm);
+}
+
+.git-file.staged {
+  color: #7ee787;
+}
+
+.git-file.modified {
+  color: #ffd93d;
+}
+
+
+/* 加载动画 */
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 树形结构子节点 */
+.tree-children {
+  /* 子节点容器 */
+}
+
+/* 树形根节点 */
+.tree-root {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.tree-root:hover {
+  background: var(--bg-hover);
+}
+
+.tree-root .file-icon {
+  margin-left: 2px;
+}
+
+/* 加载状态 */
 .loading {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-lg);
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  text-align: center;
   color: var(--text-muted);
+  font-size: 13px;
 }

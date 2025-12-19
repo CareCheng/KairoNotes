@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence } from 'framer-motion';
 import { useStore } from './store';
@@ -10,15 +10,25 @@ import { StatusBar } from './components/StatusBar';
 import { SearchPanel } from './components/SearchPanel';
 import { SettingsPanel } from './components/SettingsPanel';
 import { CommandPalette } from './components/CommandPalette';
+import { Terminal } from './components/Terminal';
+import { MarkdownPreview } from './components/MarkdownPreview';
+import { ToolsPanel } from './components/ToolsPanel';
 import './styles/App.css';
 
 function App() {
   const { i18n } = useTranslation();
-  const { settings, loadSettings, theme } = useStore();
+  const { 
+    settings, loadSettings, theme, 
+    restoreSession, showTerminal, showMarkdownPreview 
+  } = useStore();
+  const [showTools, setShowTools] = useState(false);
 
   useEffect(() => {
     loadSettings();
-  }, [loadSettings]);
+    if (settings.restoreWindows) {
+      restoreSession();
+    }
+  }, []);
 
   useEffect(() => {
     if (settings.language) {
@@ -30,6 +40,38 @@ function App() {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
+  // Save session on unload
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      useStore.getState().saveSession();
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
+
+  // Global keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const { toggleCommandPalette, toggleSearch, toggleTerminal, toggleSettings } = useStore.getState();
+      
+      if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+        e.preventDefault();
+        toggleCommandPalette();
+      } else if (e.ctrlKey && e.key === 'f') {
+        e.preventDefault();
+        toggleSearch();
+      } else if (e.ctrlKey && e.key === '`') {
+        e.preventDefault();
+        toggleTerminal();
+      } else if (e.ctrlKey && e.key === ',') {
+        e.preventDefault();
+        toggleSettings();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <div className={`app ${theme}`}>
       <TitleBar />
@@ -37,9 +79,19 @@ function App() {
         <AnimatePresence>
           {settings.showSidebar && <Sidebar />}
         </AnimatePresence>
-        <div className="editor-area">
-          <EditorTabs />
-          <Editor />
+        <div className="main-area">
+          <div className="editor-area">
+            <EditorTabs />
+            <div className="editor-container-wrapper">
+              <Editor />
+              <AnimatePresence>
+                {showMarkdownPreview && <MarkdownPreview />}
+              </AnimatePresence>
+            </div>
+          </div>
+          <AnimatePresence>
+            {showTerminal && <Terminal />}
+          </AnimatePresence>
         </div>
         <AnimatePresence>
           <SearchPanel />
@@ -48,6 +100,7 @@ function App() {
       {settings.showStatusBar && <StatusBar />}
       <SettingsPanel />
       <CommandPalette />
+      <ToolsPanel isOpen={showTools} onClose={() => setShowTools(false)} />
     </div>
   );
 }

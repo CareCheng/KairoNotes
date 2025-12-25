@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence } from 'framer-motion';
+import { listen } from '@tauri-apps/api/event';
+import { invoke } from '@tauri-apps/api/core';
 import { useStore } from './store';
 import { TitleBar } from './components/TitleBar';
 import { Sidebar } from './components/Sidebar';
@@ -40,8 +42,27 @@ function App() {
       if (settings.restoreWindows) {
         restoreSession();
       }
+      // 前端加载完成后，通知后端显示窗口
+      try {
+        await invoke('show_main_window');
+      } catch (e) {
+        console.error('Failed to show window:', e);
+      }
     };
     init();
+  }, []);
+
+  // 监听从命令行/右键菜单打开文件的事件
+  useEffect(() => {
+    const unlisten = listen<string>('open-file', (event) => {
+      console.log('Received open-file event:', event.payload);
+      const { openFile } = useStore.getState();
+      openFile(event.payload);
+    });
+    
+    return () => {
+      unlisten.then(fn => fn());
+    };
   }, []);
 
   // 当设置加载完成后，切换到用户设置的语言

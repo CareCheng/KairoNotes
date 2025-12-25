@@ -12,7 +12,7 @@ mod syntax;
 mod system_integration;
 
 use std::path::PathBuf;
-use tauri::Manager;
+use tauri::{Manager, Emitter};
 use tauri_plugin_window_state::StateFlags;
 
 /// 获取前端资源目录路径
@@ -148,6 +148,8 @@ pub fn run() {
             // Terminal commands
             commands::execute_terminal_command,
             commands::get_available_terminals,
+            // Window commands
+            commands::show_main_window,
         ])
         .setup(move |app| {
             use tauri::{WebviewUrl, WebviewWindowBuilder};
@@ -170,8 +172,10 @@ pub fn run() {
                 .inner_size(1400.0, 900.0)
                 .min_inner_size(800.0, 600.0)
                 .decorations(false)
+                .transparent(false)
                 .center()
-                .visible(true)
+                .visible(false)  // 先隐藏窗口，等前端加载完成后再显示
+                .background_color(tauri::window::Color(30, 30, 30, 255))  // 设置深色背景
                 .build()?;
             
             #[cfg(debug_assertions)]
@@ -179,6 +183,18 @@ pub fn run() {
             
             // Log GUI path for debugging
             log::info!("GUI path: {:?}, exists: {}", gui_path, gui_path.exists());
+            
+            // 处理命令行参数 - 打开文件
+            let args: Vec<String> = std::env::args().collect();
+            if args.len() > 1 {
+                let file_path = args[1].clone();
+                let window = app.get_webview_window("main").unwrap();
+                // 延迟发送事件，等待前端加载完成
+                tauri::async_runtime::spawn(async move {
+                    tokio::time::sleep(tokio::time::Duration::from_millis(1000)).await;
+                    let _ = window.emit("open-file", file_path);
+                });
+            }
             
             // Initialize settings
             tauri::async_runtime::spawn(async move {

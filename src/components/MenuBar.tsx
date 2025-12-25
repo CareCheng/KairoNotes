@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from '../store';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Check } from 'lucide-react';
 import '../styles/MenuBar.css';
 
 interface MenuItem {
@@ -15,6 +15,7 @@ interface MenuItem {
   separator?: boolean;
   submenu?: MenuItem[];
   checked?: boolean;
+  isToggle?: boolean; // 标记是否为切换类型的菜单项（点击后不关闭菜单）
 }
 
 interface MenuProps {
@@ -42,8 +43,11 @@ function Menu({ label, items }: MenuProps) {
   const handleItemClick = (item: MenuItem) => {
     if (item.action && !item.disabled && !item.submenu) {
       item.action();
-      setIsOpen(false);
-      setActiveSubmenu(null);
+      // 如果是切换类型的菜单项，不关闭菜单
+      if (!item.isToggle) {
+        setIsOpen(false);
+        setActiveSubmenu(null);
+      }
     }
   };
 
@@ -56,6 +60,53 @@ function Menu({ label, items }: MenuProps) {
     submenuTimeoutRef.current = setTimeout(() => setActiveSubmenu(null), 150);
   };
 
+  // 检查菜单项列表中是否有任何带 checked 属性的项
+  const hasCheckableItems = (menuItems: MenuItem[]): boolean => {
+    return menuItems.some(item => item.checked !== undefined);
+  };
+
+  const renderMenuItem = (item: MenuItem, index: number, showCheckColumn: boolean) => {
+    if (item.separator) {
+      return <div key={index} className="menu-separator" />;
+    }
+
+    return (
+      <div
+        key={item.id}
+        className={`menu-item ${item.disabled ? 'disabled' : ''} ${item.submenu ? 'has-submenu' : ''}`}
+        onClick={() => handleItemClick(item)}
+        onMouseEnter={() => item.submenu && handleSubmenuEnter(item.id)}
+        onMouseLeave={handleSubmenuLeave}
+      >
+        {showCheckColumn && (
+          <span className="menu-item-check">
+            {item.checked ? <Check size={14} /> : ''}
+          </span>
+        )}
+        <span className="menu-item-label">{item.label}</span>
+        {item.shortcut && <span className="menu-item-shortcut">{item.shortcut}</span>}
+        {item.submenu && (
+          <>
+            <ChevronRight size={14} className="menu-item-arrow" />
+            {activeSubmenu === item.id && (
+              <div 
+                className="menu-submenu" 
+                onMouseEnter={() => handleSubmenuEnter(item.id)} 
+                onMouseLeave={handleSubmenuLeave}
+              >
+                {item.submenu.map((subItem, subIndex) => 
+                  renderMenuItem(subItem, subIndex, hasCheckableItems(item.submenu!))
+                )}
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    );
+  };
+
+  const showCheckColumn = hasCheckableItems(items);
+
   return (
     <div className="menu" ref={menuRef}>
       <button className={`menu-trigger ${isOpen ? 'active' : ''}`} onClick={() => setIsOpen(!isOpen)}>
@@ -63,51 +114,7 @@ function Menu({ label, items }: MenuProps) {
       </button>
       {isOpen && (
         <div className="menu-dropdown">
-          {items.map((item, index) => (
-            item.separator ? (
-              <div key={index} className="menu-separator" />
-            ) : (
-              <div
-                key={item.id}
-                className={`menu-item ${item.disabled ? 'disabled' : ''} ${item.submenu ? 'has-submenu' : ''}`}
-                onClick={() => handleItemClick(item)}
-                onMouseEnter={() => item.submenu && handleSubmenuEnter(item.id)}
-                onMouseLeave={handleSubmenuLeave}
-              >
-                {item.checked !== undefined && (
-                  <span className="menu-item-check">{item.checked ? '✓' : ''}</span>
-                )}
-                <span className="menu-item-label">{item.label}</span>
-                {item.shortcut && <span className="menu-item-shortcut">{item.shortcut}</span>}
-                {item.submenu && (
-                  <>
-                    <ChevronRight size={14} className="menu-item-arrow" />
-                    {activeSubmenu === item.id && (
-                      <div className="menu-submenu" onMouseEnter={() => handleSubmenuEnter(item.id)} onMouseLeave={handleSubmenuLeave}>
-                        {item.submenu.map((subItem, subIndex) => (
-                          subItem.separator ? (
-                            <div key={subIndex} className="menu-separator" />
-                          ) : (
-                            <div
-                              key={subItem.id}
-                              className={`menu-item ${subItem.disabled ? 'disabled' : ''}`}
-                              onClick={(e) => { e.stopPropagation(); handleItemClick(subItem); }}
-                            >
-                              {subItem.checked !== undefined && (
-                                <span className="menu-item-check">{subItem.checked ? '✓' : ''}</span>
-                              )}
-                              <span className="menu-item-label">{subItem.label}</span>
-                              {subItem.shortcut && <span className="menu-item-shortcut">{subItem.shortcut}</span>}
-                            </div>
-                          )
-                        ))}
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-            )
-          ))}
+          {items.map((item, index) => renderMenuItem(item, index, showCheckColumn))}
         </div>
       )}
     </div>
@@ -122,7 +129,8 @@ export function MenuBar() {
     toggleTerminal, toggleMarkdownPreview, toggleDiffView, toggleAbout,
     setTheme, theme, settings, updateSettings, openFolderDialog, closeFolder,
     splitEditor, formatDocument, recentFiles, clearRecentFiles,
-    editorUndo, editorRedo, editorCut, editorCopy, editorPaste, editorSelectAll, editorGoToLine
+    editorUndo, editorRedo, editorCut, editorCopy, editorPaste, editorSelectAll, editorGoToLine,
+    showTerminal, showMarkdownPreview, showDiffView
   } = useStore();
 
   const fileMenu: MenuItem[] = [
@@ -238,17 +246,17 @@ export function MenuBar() {
       ],
     },
     { id: 'separator2', label: '', separator: true },
-    { id: 'explorer', label: t('view.explorer'), shortcut: 'Ctrl+Shift+E', checked: settings.showSidebar, action: () => updateSettings({ showSidebar: !settings.showSidebar }) },
+    { id: 'explorer', label: t('view.explorer'), shortcut: 'Ctrl+Shift+E', checked: settings.showSidebar, isToggle: true, action: () => updateSettings({ showSidebar: !settings.showSidebar }) },
     { id: 'search', label: t('view.search'), shortcut: 'Ctrl+Shift+F', action: toggleGlobalSearch },
     { id: 'extensions', label: t('view.extensions'), shortcut: 'Ctrl+Shift+X' },
     { id: 'separator3', label: '', separator: true },
-    { id: 'terminal', label: t('view.terminal'), shortcut: 'Ctrl+`', action: toggleTerminal },
-    { id: 'markdownPreview', label: t('view.markdownPreview'), shortcut: 'Ctrl+Shift+V', action: toggleMarkdownPreview },
-    { id: 'diffView', label: t('view.diffView'), action: toggleDiffView },
+    { id: 'terminal', label: t('view.terminal'), shortcut: 'Ctrl+`', checked: showTerminal, isToggle: true, action: toggleTerminal },
+    { id: 'markdownPreview', label: t('view.markdownPreview'), shortcut: 'Ctrl+Shift+V', checked: showMarkdownPreview, isToggle: true, action: toggleMarkdownPreview },
+    { id: 'diffView', label: t('view.diffView'), checked: showDiffView, isToggle: true, action: toggleDiffView },
     { id: 'separator4', label: '', separator: true },
-    { id: 'wordWrap', label: t('view.wordWrap'), shortcut: 'Alt+Z', checked: settings.wordWrap === 'on', action: () => updateSettings({ wordWrap: settings.wordWrap === 'on' ? 'off' : 'on' }) },
-    { id: 'minimap', label: t('view.minimap'), checked: settings.minimapEnabled, action: () => updateSettings({ minimapEnabled: !settings.minimapEnabled }) },
-    { id: 'statusBar', label: t('view.statusBar'), checked: settings.showStatusBar, action: () => updateSettings({ showStatusBar: !settings.showStatusBar }) },
+    { id: 'wordWrap', label: t('view.wordWrap'), shortcut: 'Alt+Z', checked: settings.wordWrap === 'on', isToggle: true, action: () => updateSettings({ wordWrap: settings.wordWrap === 'on' ? 'off' : 'on' }) },
+    { id: 'minimap', label: t('view.minimap'), checked: settings.minimapEnabled, isToggle: true, action: () => updateSettings({ minimapEnabled: !settings.minimapEnabled }) },
+    { id: 'statusBar', label: t('view.statusBar'), checked: settings.showStatusBar, isToggle: true, action: () => updateSettings({ showStatusBar: !settings.showStatusBar }) },
   ];
 
   const goMenu: MenuItem[] = [

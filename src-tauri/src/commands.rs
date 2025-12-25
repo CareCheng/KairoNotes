@@ -3,7 +3,7 @@
 use crate::{editor, encoding, file_ops, fonts, plugin, settings, syntax};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use tauri::AppHandle;
+use tauri::{AppHandle, Manager};
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -490,4 +490,14 @@ pub fn get_available_terminals() -> Vec<String> {
     }
     
     terminals
+}
+
+// Window commands
+#[tauri::command]
+pub fn show_main_window(app: AppHandle) -> Result<(), String> {
+    if let Some(window) = app.get_webview_window("main") {
+        window.show().map_err(|e| e.to_string())?;
+        window.set_focus().map_err(|e| e.to_string())?;
+    }
+    Ok(())
 }

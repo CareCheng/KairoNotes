@@ -1,29 +1,57 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# ============================================
+# KamiServer 项目 .gitignore
+# 仅过滤编译中间文件和编译输出
+# ============================================
 
-node_modules
-dist-ssr
-*.local
+# ==================== Rust (Rlient) ====================
 
-# Build output - 统一输出目录
-/dist/
+# Cargo 构建输出
+**/target/
 
-# Legacy output directories
-dist-release/
+# ==================== Go (Server/User) ====================
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+# Go 二进制文件
+*.exe
+!*.exe.manifest
+
+# ==================== Node.js (前端) ====================
+
+# 依赖目录
+**/node_modules/
+
+# Next.js 构建输出
+**/.next/
+**/out/
+
+# ==================== C++ (Client) ====================
+
+# CMake 构建目录
+**/CMakeFiles/
+**/CMakeCache.txt
+**/cmake_install.cmake
+
+# 构建输出目录
+**/build/
+**/Release/
+**/Debug/
+**/x64/
+**/x86/
+
+# 编译中间文件
+*.o
+*.obj
+*.a
+*.lib
+*.lo
+*.pdb
+*.png
+
+# Qt 生成文件
+**/moc_*.cpp
+**/ui_*.h
+**/qrc_*.cpp
+
+# ==================== 项目编译输出 ====================
+
+# 各模块的 dist 目录
+**/dist/
